@@ -49,8 +49,8 @@ public class CommandHelp extends Command
 
         for (Command c : Shenron.get().getCommandHandler().getCommandList())
         {
-            message += ("    " + c.getCommand() + " " + c.getSyntax() + "\n" +
-                        "        " + c.getDescription());
+            message += ("    " + Shenron.get().getCommandHandler().getPrefix() + c.getCommand() + " " + c.getSyntax() + "\n" +
+                        "        " + c.getDescription() + "\n");
         }
 
         ((MessageCommandCaller) caller).getConversation().sendMessage(message);

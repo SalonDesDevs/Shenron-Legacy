@@ -101,15 +101,15 @@ public class Shenron extends Bot
             MessageCommandCaller commandCaller = (MessageCommandCaller) caller;
             User user = (((DiscordUser) commandCaller.getUser())).getUser(); // TODO: KROBOT: Make User#getPrivateConversation
 
-            commandCaller.getConversation().sendMessage("Sorry ! An exception was thrown while executing command " + command.getCommand() + "\nI sent you a crash report, " + mdUnderline("send it to the developers asap !"));
+            commandCaller.getConversation().sendMessage("Sorry ! An exception was thrown while executing command " + PREFIX + command.getCommand() + "\nI sent you a crash report, " + mdUnderline("send it to the developers asap !"));
 
             String report = "####################################\n" +
                             "\n" +
                             "Shenron command crash report\n" +
                             "\n" +
-                            "Version : \n" + bot().getVersion() +
+                            "Version : " + bot().getVersion() + "\n" +
                             "Command : /" + command.getCommand() + " (" + command.getClass().getName() + ")\n" +
-                            "Args : " + String.join(" ", args) + "\n" +
+                            "Args : " + String.join("; ", args) + "\n" +
                             "Caller : " + user.getUsername() + "\n" +
                             "Time : " + new Date() + "\n" +
                             "\n" +

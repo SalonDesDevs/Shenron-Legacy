@@ -1,3 +1,8 @@
 .gradle/
 .idea/
 build/
+.env
+motors/
+discord-tokens/
+shenron/
+bots/

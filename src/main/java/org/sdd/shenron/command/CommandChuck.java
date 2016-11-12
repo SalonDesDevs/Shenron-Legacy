@@ -1,11 +1,11 @@
 package org.sdd.shenron.command;
 
 import com.google.gson.Gson;
-import com.google.gson.stream.JsonReader;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import fr.litarvan.krobot.command.Command;
 import fr.litarvan.krobot.command.ICommandCaller;
 import fr.litarvan.krobot.command.message.MessageCommandCaller;
-import fr.litarvan.krobot.console.ConsoleCommandCaller;
 import fr.litarvan.krobot.util.Markdown;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -62,9 +62,8 @@ public class CommandChuck extends Command
             HttpClient client = HttpClientBuilder.create().build();
             HttpGet request = new HttpGet(URL);
             HttpResponse response = client.execute(request);
-            Gson gson = new Gson();
-            JsonReader reader = gson.newJsonReader(new BufferedReader(new InputStreamReader(response.getEntity().getContent())));
-            String result = reader.nextString();
+            JsonElement json = new JsonParser().parse(new BufferedReader(new InputStreamReader(response.getEntity().getContent())));
+            String result = json.getAsJsonObject().get("value").getAsJsonObject().get("joke").getAsString();
             String quote = result.replaceAll("&quot;", "\"");
 
             ((MessageCommandCaller) caller).getConversation().sendMessage(Markdown.mdEmphasis(quote));
