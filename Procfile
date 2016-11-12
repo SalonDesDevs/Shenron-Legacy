@@ -1,0 +1,1 @@
+bot: gradle run
