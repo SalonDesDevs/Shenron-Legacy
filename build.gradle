@@ -19,7 +19,7 @@ repositories {
 }
 
 dependencies {
-    compile 'fr.litarvan.krobot:krobot:1.3.7'
+    compile 'fr.litarvan.krobot:krobot:1.4.0'
 }
 
 // Heroku start

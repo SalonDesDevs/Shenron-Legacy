@@ -8,12 +8,11 @@ import fr.litarvan.krobot.command.message.MessageCommandHandler;
 import fr.litarvan.krobot.console.ConsoleCommandCaller;
 import fr.litarvan.krobot.message.MessageReceivedEvent;
 import fr.litarvan.krobot.motor.IMotorExtension;
-import fr.litarvan.krobot.motor.discord.DiscordUser;
+import fr.litarvan.krobot.motor.User;
 import fr.litarvan.krobot.util.PermissionManager;
 import java.io.File;
 import java.util.Date;
 import java.util.List;
-import net.dv8tion.jda.entities.User;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jetbrains.annotations.NotNull;
 import org.sdd.shenron.command.*;
@@ -27,8 +26,8 @@ public class Shenron extends Bot
     public static final String VERSION = "1.0.0";
     public static final String PREFIX = "/";
 
-    private File folder;
-    private File permissionsFile;
+    private File folder = new File(krobot().getFolder(), "shenron");
+    private File permissionsFile = new File(folder, "permissions.json");
 
     private MessageCommandHandler commandHandler = new MessageCommandHandler(PREFIX);
     private PermissionManager permissionManager = new PermissionManager();
@@ -37,11 +36,6 @@ public class Shenron extends Bot
     public void onStart(StartEvent startEvent)
     {
         info("Starting Shenron v" + VERSION);
-
-        folder = new File(krobot().getFolder(), "shenron");
-        permissionsFile = new File(folder, "permissions.json");
-
-        folder.mkdirs();
 
         if (permissionsFile.exists())
         {
@@ -60,12 +54,11 @@ public class Shenron extends Bot
     {
         super.onStop(event);
 
-        // TODO: KROBOT: Set bot to null only when fully stopped
-        logger().info("[Shenron] Stopping Shenron");
+        info("Stopping Shenron");
 
         permissionManager.save(permissionsFile);
 
-        logger().info("[Shenron] Shenron stopped");
+        info("Shenron stopped");
     }
 
     @Override
@@ -99,7 +92,7 @@ public class Shenron extends Bot
         if (caller instanceof MessageCommandCaller)
         {
             MessageCommandCaller commandCaller = (MessageCommandCaller) caller;
-            User user = (((DiscordUser) commandCaller.getUser())).getUser(); // TODO: KROBOT: Make User#getPrivateConversation
+            User user = commandCaller.getUser();
 
             commandCaller.getConversation().sendMessage("Sorry ! An exception was thrown while executing command " + PREFIX + command.getCommand() + "\nI sent you a crash report, " + mdUnderline("send it to the developers asap !"));
 
@@ -117,7 +110,7 @@ public class Shenron extends Bot
                             "\n" +
                             "####################################";
 
-            user.getPrivateChannel().sendMessage(report);
+            user.getPrivateConversation().sendMessage(report);
         }
         else if (caller instanceof ConsoleCommandCaller)
         {
