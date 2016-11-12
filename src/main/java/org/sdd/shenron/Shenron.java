@@ -41,6 +41,8 @@ public class Shenron extends Bot
         folder = new File(krobot().getFolder(), "shenron");
         permissionsFile = new File(folder, "permissions.json");
 
+        folder.mkdirs();
+
         if (permissionsFile.exists())
         {
             permissionManager.load(permissionsFile);
