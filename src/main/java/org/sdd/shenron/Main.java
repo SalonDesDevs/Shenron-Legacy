@@ -15,11 +15,15 @@ public class Main
 
         if (token != null)
         {
+            System.out.println("Shenron-Main: Detected on-launch token");
             FileWriter writer = null;
+            File file = new File("discord-tokens", "shenron");
+
+            file.getParentFile().mkdirs();
 
             try
             {
-                writer = new FileWriter(new File("discord-tokens", "shenron"));
+                writer = new FileWriter(file);
                 writer.write(token);
             }
             catch (IOException e)
