@@ -58,11 +58,12 @@ public class Shenron extends Bot
     {
         super.onStop(event);
 
-        info("Stopping Shenron");
+        // TODO: KROBOT: Set bot to null only when fully stopped
+        logger().info("[Shenron] Stopping Shenron");
 
         permissionManager.save(permissionsFile);
 
-        info("Shenron stopped");
+        logger().info("[Shenron] Shenron stopped");
     }
 
     @Override
