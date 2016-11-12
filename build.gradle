@@ -2,9 +2,12 @@ group 'org.sdd'
 version '1.0.0'
 
 apply plugin: 'java'
+apply plugin: 'application'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+
+mainClassName = 'org.sdd.shenron.Main'
 
 repositories {
     mavenCentral()
@@ -18,3 +21,17 @@ repositories {
 dependencies {
     compile 'fr.litarvan.krobot:krobot:1.3.7'
 }
+
+// Heroku start
+
+task stage(dependsOn: ['build', 'clean'])
+build.mustRunAfter clean
+
+task copyToLib(type: Copy) {
+    into "$buildDir/lib"
+    from(configurations.compile)
+}
+
+stage.dependsOn copyToLib
+
+// Heroku end
