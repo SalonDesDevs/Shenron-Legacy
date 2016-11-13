@@ -110,7 +110,7 @@ public class Shenron extends Bot
                             "\n" +
                             "####################################";
 
-            user.getPrivateConversation().sendMessage(report);
+            user.getPrivateConversation().sendMessage(mdCode(report, ""));
         }
         else if (caller instanceof ConsoleCommandCaller)
         {
