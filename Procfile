@@ -1,1 +1,1 @@
-bot: ./gradlew run
+bot: gradle run

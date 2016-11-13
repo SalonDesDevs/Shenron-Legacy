@@ -45,7 +45,7 @@ task dist(type: Jar) {
 }
 
 dependencies {
-    compile 'fr.litarvan.krobot:krobot:1.4.2'
+    compile 'fr.litarvan.krobot:krobot:1.4.3'
 }
 
 // Heroku start
