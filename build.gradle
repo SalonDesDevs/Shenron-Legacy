@@ -18,8 +18,34 @@ repositories {
     }
 }
 
+jar {
+    from "LICENSE"
+
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
+}
+
+task dist(type: Jar) {
+    from "LICENSE"
+
+    baseName = archivesBaseName + '-all'
+
+    from {
+        configurations.compile.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+
+    with jar
+
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
+}
+
 dependencies {
-    compile 'fr.litarvan.krobot:krobot:1.4.0'
+    compile 'fr.litarvan.krobot:krobot:1.4.2'
 }
 
 // Heroku start
