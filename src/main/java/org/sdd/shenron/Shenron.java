@@ -102,15 +102,18 @@ public class Shenron extends Bot
                             "\n" +
                             "Version : " + bot().getVersion() + "\n" +
                             "Command : /" + command.getCommand() + " (" + command.getClass().getName() + ")\n" +
-                            "Args : " + String.join("; ", args) + "\n" +
-                            "Caller : " + user.getUsername() + "\n" +
-                            "Time : " + new Date() + "\n" +
+                            "Args    : " + String.join("; ", args) + "\n" +
+                            "Caller  : " + user.getUsername() + "\n" +
+                            "Time    : " + new Date() + "\n" +
                             "\n" +
                             ExceptionUtils.getStackTrace(ex) + "\n" +
                             "\n" +
                             "####################################";
 
-            user.getPrivateConversation().sendMessage(mdCode(report, ""));
+            if (user.getPrivateConversation() != null)
+            {
+                user.getPrivateConversation().sendMessage(mdCode(report, ""));
+            }
         }
         else if (caller instanceof ConsoleCommandCaller)
         {
