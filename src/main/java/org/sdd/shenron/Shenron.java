@@ -9,6 +9,7 @@ import fr.litarvan.krobot.console.ConsoleCommandCaller;
 import fr.litarvan.krobot.message.MessageReceivedEvent;
 import fr.litarvan.krobot.motor.IMotorExtension;
 import fr.litarvan.krobot.motor.User;
+import fr.litarvan.krobot.util.Markdown;
 import fr.litarvan.krobot.util.PermissionManager;
 import java.io.File;
 import java.util.Date;
@@ -16,6 +17,9 @@ import java.util.List;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jetbrains.annotations.NotNull;
 import org.sdd.shenron.command.*;
+import org.sdd.shenron.inlayer.command.InlayerCommandBold;
+import org.sdd.shenron.inlayer.InlayerCommandHandler;
+import org.sdd.shenron.inlayer.command.InlayerCommandMarkdown;
 
 
 import static fr.litarvan.krobot.util.KrobotFunctions.*;
@@ -25,12 +29,14 @@ public class Shenron extends Bot
 {
     public static final String VERSION = "1.0.0";
     public static final String PREFIX = "/";
+    public static final char INLAYER_PREFIX = '#';
 
     private File folder = new File(krobot().getFolder(), "shenron");
     private File permissionsFile = new File(folder, "permissions.json");
 
     private MessageCommandHandler commandHandler = new MessageCommandHandler(PREFIX);
     private PermissionManager permissionManager = new PermissionManager();
+    private InlayerCommandHandler inlayerCommandHandler = new InlayerCommandHandler(INLAYER_PREFIX);
 
     @Override
     public void onStart(StartEvent startEvent)
@@ -43,8 +49,13 @@ public class Shenron extends Bot
         }
 
         commandHandler.register(new CommandChuck(), new CommandCrashTest(), new CommandHelp(), new CommandVersion());
+        inlayerCommandHandler.register(new InlayerCommandMarkdown("bold", 'b', Markdown.BOLD, "bold"),
+                                       new InlayerCommandMarkdown("italic", 'i', Markdown.EMPHASIS, "italic"),
+                                       new InlayerCommandMarkdown("underline", 'u', Markdown.UNDERLINE, "underline"),
+                                       new InlayerCommandMarkdown("strike", 's', Markdown.STRIKE, "strike"));
 
         addMessageListener(commandHandler);
+        addMessageListener(inlayerCommandHandler);
 
         info("Shenron started");
     }
@@ -85,7 +96,7 @@ public class Shenron extends Bot
         logger().error(prefix() + " " + message);
     }
 
-    public static void handleCommandException(@NotNull ICommandCaller caller, @NotNull Command command, List<String> args, Exception ex)
+    public static void handleCommandException(@NotNull ICommandCaller caller, Command command, List<String> args, Exception ex)
     {
         // TODO: Send message to the admin
 
@@ -94,15 +105,15 @@ public class Shenron extends Bot
             MessageCommandCaller commandCaller = (MessageCommandCaller) caller;
             User user = commandCaller.getUser();
 
-            commandCaller.getConversation().sendMessage("Sorry ! An exception was thrown while executing command " + PREFIX + command.getCommand() + "\nI sent you a crash report, " + mdUnderline("send it to the developers asap !"));
+            commandCaller.getConversation().sendMessage("Sorry ! An exception was thrown" + (command == null ? "" : " while executing command " + PREFIX + command.getCommand()) + "\nI sent you a crash report, " + mdUnderline("send it to the developers asap !"));
 
             String report = "####################################\n" +
                             "\n" +
                             "Shenron command crash report\n" +
                             "\n" +
                             "Version : " + bot().getVersion() + "\n" +
-                            "Command : /" + command.getCommand() + " (" + command.getClass().getName() + ")\n" +
-                            "Args    : " + String.join("; ", args) + "\n" +
+                            (command == null ? "" : "Command : /" + command.getCommand() + " (" + command.getClass().getName() + ")\n") +
+                            (args == null ? "" : "Args    : " + String.join("; ", args) + "\n") +
                             "Caller  : " + user.getUsername() + "\n" +
                             "Time    : " + new Date() + "\n" +
                             "\n" +
