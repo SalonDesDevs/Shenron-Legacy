@@ -73,20 +73,25 @@ public class InlayerCommandHandler implements IMessageListener
     private String apply(String message, InlayerCall[] calls)
     {
         String result = message;
+        int toAdd = 0;
 
         for (InlayerCall call : calls)
         {
-            StringParser parser = new StringParser(message, InlayerParser.ESCAPE_CHAR);
-            parser.setIndex(call.getPos());
+            int oldSize = result.length();
+
+            StringParser parser = new StringParser(result, InlayerParser.ESCAPE_CHAR);
+            parser.setIndex(call.getPos() + toAdd);
 
             if (call.getCommand() != null)
             {
-                result = call.getCommand().handle(call.getCaller(), message, parser, call.getArgs());
+                result = call.getCommand().handle(call.getCaller(), result, parser, call.getArgs());
             }
             else
             {
                 result = result.substring(0, call.getPos()) + "??" + result.substring(call.getPos());
             }
+
+            toAdd += result.length() - oldSize;
         }
 
         return result;

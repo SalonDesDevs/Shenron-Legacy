@@ -19,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import org.sdd.shenron.command.*;
 import org.sdd.shenron.inlayer.InlayerCommandHandler;
 import org.sdd.shenron.inlayer.command.InlayerCommandMarkdown;
+import org.sdd.shenron.inlayer.command.InlayerCommandQuote;
 
 
 import static fr.litarvan.krobot.util.KrobotFunctions.*;
@@ -48,7 +49,8 @@ public class Shenron extends Bot
         }
 
         commandHandler.register(new CommandChuck(), new CommandCrashTest(), new CommandHelp(), new CommandVersion());
-        inlayerCommandHandler.register(new InlayerCommandMarkdown("bold", 'b', Markdown.BOLD, "bold"),
+        inlayerCommandHandler.register(new InlayerCommandQuote(),
+                                       new InlayerCommandMarkdown("bold", 'b', Markdown.BOLD, "bold"),
                                        new InlayerCommandMarkdown("italic", 'i', Markdown.EMPHASIS, "italic"),
                                        new InlayerCommandMarkdown("underline", 'u', Markdown.UNDERLINE, "underline"),
                                        new InlayerCommandMarkdown("strike", 's', Markdown.STRIKE, "strike"));
