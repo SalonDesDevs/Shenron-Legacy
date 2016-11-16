@@ -4,5 +4,6 @@ build/
 .env
 motors/
 discord-tokens/
-shenron/
+/shenron/
 bots/
+!/src/main/java/org/sdd/shenron
