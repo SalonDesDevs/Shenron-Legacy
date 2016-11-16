@@ -17,7 +17,6 @@ import java.util.List;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jetbrains.annotations.NotNull;
 import org.sdd.shenron.command.*;
-import org.sdd.shenron.inlayer.command.InlayerCommandBold;
 import org.sdd.shenron.inlayer.InlayerCommandHandler;
 import org.sdd.shenron.inlayer.command.InlayerCommandMarkdown;
 
