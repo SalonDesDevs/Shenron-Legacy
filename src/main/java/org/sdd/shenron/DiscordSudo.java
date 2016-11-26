@@ -11,11 +11,20 @@ import org.json.JSONObject;
 
 public final class DiscordSudo
 {
+    private static boolean initialized = false;
+
     public static void sendFor(DiscordUser user, DiscordConversation conversation, String message) throws WebhookException
     {
         TextChannel channel = (TextChannel) conversation.getChannel();
         Guild guild = channel.getGuild();
         JDAImpl jda = (JDAImpl) guild.getJDA();
+
+        if (!initialized)
+        {
+            Webhook.initBotHooks(jda);
+            initialized = true;
+        }
+
         Webhook hook = Webhook.getBotHook(jda, channel);
 
         if (hook == null)
