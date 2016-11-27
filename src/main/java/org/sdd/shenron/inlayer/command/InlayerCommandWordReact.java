@@ -3,10 +3,13 @@ package org.sdd.shenron.inlayer.command;
 import fr.litarvan.krobot.command.message.MessageCommandCaller;
 import fr.litarvan.krobot.motor.Message;
 import fr.litarvan.krobot.motor.discord.DiscordMessage;
+import java.util.Arrays;
 import java.util.List;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.impl.EmoteImpl;
+import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import org.jetbrains.annotations.NotNull;
+import org.sdd.shenron.Shenron;
 import org.sdd.shenron.inlayer.InlayerCommand;
 import org.sdd.shenron.inlayer.StringParser;
 
@@ -56,20 +59,12 @@ public class InlayerCommandWordReact extends InlayerCommand
         DiscordMessage discordSource = (DiscordMessage) source;
         try
         {
-            discordSource.getMessage().addReaction(new EmoteImpl("a", discordSource.getMessage().getJDA())).block();
+            discordSource.getMessage().addReaction(discordSource.getMessage().getJDA().getEmoteById(":a:")).block();
+            System.out.println(Arrays.toString(discordSource.getMessage().getJDA().getEmotes().toArray()));
         }
-        catch (Throwable t)
+        catch (RateLimitedException e)
         {
-            t.printStackTrace();
-
-            try
-            {
-                discordSource.getMessage().addReaction(discordSource.getMessage().getJDA().getEmoteById("a")).block();
-            }
-            catch (Throwable t2)
-            {
-                t2.printStackTrace();
-            }
+            Shenron.handleCommandException(caller, this, args, e);
         }
 
         return message;
