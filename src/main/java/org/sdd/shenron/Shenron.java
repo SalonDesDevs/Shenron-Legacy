@@ -52,9 +52,8 @@ public class Shenron extends Bot
             permissionManager.load(permissionsFile);
         }
 
-        commandHandler.register(new CommandChuck(), new CommandCrashTest(), new CommandHelp(), new CommandVersion());
+        commandHandler.register(new CommandChuck(), new CommandCrashTest(), new CommandHelp(), new CommandVersion(), new CommandWordReact());
         inlayerCommandHandler.register(new InlayerCommandQuote(),
-                                       new InlayerCommandWordReact(),
                                        new InlayerCommandMarkdown("bold", 'b', Markdown.BOLD, "bold"),
                                        new InlayerCommandMarkdown("italic", 'i', Markdown.EMPHASIS, "italic"),
                                        new InlayerCommandMarkdown("underline", 'u', Markdown.UNDERLINE, "underline"),
