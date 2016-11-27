@@ -22,6 +22,7 @@ import org.sdd.shenron.command.*;
 import org.sdd.shenron.inlayer.InlayerCommandHandler;
 import org.sdd.shenron.inlayer.command.InlayerCommandMarkdown;
 import org.sdd.shenron.inlayer.command.InlayerCommandQuote;
+import org.sdd.shenron.inlayer.command.InlayerCommandWordReact;
 
 
 import static fr.litarvan.krobot.util.KrobotFunctions.*;
@@ -31,6 +32,7 @@ public class Shenron extends Bot
 {
     public static final String VERSION = "1.0.0";
     public static final String PREFIX = "/";
+    public static final char INLAYER_START = ';';
     public static final char INLAYER_PREFIX = '#';
 
     private File folder = new File(krobot().getFolder(), "shenron");
@@ -38,7 +40,7 @@ public class Shenron extends Bot
 
     private MessageCommandHandler commandHandler = new MessageCommandHandler(PREFIX);
     private PermissionManager permissionManager = new PermissionManager();
-    private InlayerCommandHandler inlayerCommandHandler = new InlayerCommandHandler(INLAYER_PREFIX);
+    private InlayerCommandHandler inlayerCommandHandler = new InlayerCommandHandler(INLAYER_START, INLAYER_PREFIX);
 
     @Override
     public void onStart(StartEvent startEvent)
@@ -52,6 +54,7 @@ public class Shenron extends Bot
 
         commandHandler.register(new CommandChuck(), new CommandCrashTest(), new CommandHelp(), new CommandVersion());
         inlayerCommandHandler.register(new InlayerCommandQuote(),
+                                       new InlayerCommandWordReact(),
                                        new InlayerCommandMarkdown("bold", 'b', Markdown.BOLD, "bold"),
                                        new InlayerCommandMarkdown("italic", 'i', Markdown.EMPHASIS, "italic"),
                                        new InlayerCommandMarkdown("underline", 'u', Markdown.UNDERLINE, "underline"),

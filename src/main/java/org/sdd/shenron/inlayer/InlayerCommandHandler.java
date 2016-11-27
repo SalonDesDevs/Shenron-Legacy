@@ -21,12 +21,14 @@ import org.sdd.shenron.WebhookException;
 
 public class InlayerCommandHandler implements IMessageListener
 {
+    private char start;
     private char prefix;
 
     private List<InlayerCommand> commands = new ArrayList<>();
 
-    public InlayerCommandHandler(char prefix)
+    public InlayerCommandHandler(char start, char prefix)
     {
+        this.start = start;
         this.prefix = prefix;
     }
 
@@ -35,10 +37,12 @@ public class InlayerCommandHandler implements IMessageListener
     {
         String message = event.getMessage().getText();
 
-        if (!message.contains(Character.toString(prefix)))
+        if (!message.startsWith(Character.toString(start)) || !message.contains(Character.toString(prefix)) || message.length() < 2)
         {
             return;
         }
+
+        message = message.substring(1);
 
         MessageCommandCaller caller = new MessageCommandCaller(event.getUser(), event.getConversation());
         InlayerParser parser = new InlayerParser(caller, message, prefix, this);
@@ -101,6 +105,11 @@ public class InlayerCommandHandler implements IMessageListener
     @Override
     public void onPrivateMessageReceived(MessageReceivedEvent messageReceivedEvent)
     {
+    }
+
+    public char getStart()
+    {
+        return start;
     }
 
     public char getPrefix()

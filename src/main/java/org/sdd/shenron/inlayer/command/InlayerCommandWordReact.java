@@ -5,7 +5,6 @@ import fr.litarvan.krobot.motor.Message;
 import fr.litarvan.krobot.motor.discord.DiscordMessage;
 import java.util.List;
 import net.dv8tion.jda.core.entities.impl.EmoteImpl;
-import net.dv8tion.jda.core.requests.Route.Emotes;
 import org.jetbrains.annotations.NotNull;
 import org.sdd.shenron.inlayer.InlayerCommand;
 import org.sdd.shenron.inlayer.StringParser;
