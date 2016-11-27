@@ -45,7 +45,11 @@ task dist(type: Jar) {
 }
 
 dependencies {
-    compile 'fr.litarvan.krobot:krobot:1.4.3'
+    compile('fr.litarvan.krobot:krobot:1.4.3') {
+        exclude group: 'net.dv8tion'
+    }
+
+    compile 'net.dv8tion:JDA:3.0.BETA_96'
 }
 
 // Heroku start
