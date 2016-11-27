@@ -1,6 +1,7 @@
 package org.sdd.shenron.inlayer.command;
 
 import fr.litarvan.krobot.command.message.MessageCommandCaller;
+import fr.litarvan.krobot.motor.Message;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.sdd.shenron.inlayer.InlayerCommand;
@@ -42,7 +43,7 @@ public class InlayerCommandQuote extends InlayerCommand
     }
 
     @Override
-    public String handle(MessageCommandCaller caller, String message, StringParser parser, List<String> args)
+    public String handle(MessageCommandCaller caller, String message, Message source, StringParser parser, List<String> args)
     {
         return message;
     }

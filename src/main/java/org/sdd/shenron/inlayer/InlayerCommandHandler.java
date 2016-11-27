@@ -4,6 +4,7 @@ import fr.litarvan.krobot.command.Command;
 import fr.litarvan.krobot.command.message.MessageCommandCaller;
 import fr.litarvan.krobot.message.IMessageListener;
 import fr.litarvan.krobot.message.MessageReceivedEvent;
+import fr.litarvan.krobot.motor.Message;
 import fr.litarvan.krobot.motor.discord.DiscordConversation;
 import fr.litarvan.krobot.motor.discord.DiscordMessage;
 import fr.litarvan.krobot.motor.discord.DiscordUser;
@@ -48,7 +49,7 @@ public class InlayerCommandHandler implements IMessageListener
             return;
         }
 
-        String parsed = apply(result.getLeft(), result.getRight().toArray(new InlayerCall[result.getRight().size()]));
+        String parsed = apply(result.getLeft(), event.getMessage(), result.getRight().toArray(new InlayerCall[result.getRight().size()]));
 
         if (event.getMessage() instanceof DiscordMessage)
         {
@@ -70,7 +71,7 @@ public class InlayerCommandHandler implements IMessageListener
         }
     }
 
-    private String apply(String message, InlayerCall[] calls)
+    private String apply(String message, Message source, InlayerCall[] calls)
     {
         String result = message;
         int toAdd = 0;
@@ -84,7 +85,7 @@ public class InlayerCommandHandler implements IMessageListener
 
             if (call.getCommand() != null)
             {
-                result = call.getCommand().handle(call.getCaller(), result, parser, call.getArgs());
+                result = call.getCommand().handle(call.getCaller(), result, source, parser, call.getArgs());
             }
             else
             {
