@@ -18,27 +18,27 @@ public class CommandWordReact extends Command
     @Override
     public String getCommand()
     {
-        return null;
+        return "wr";
     }
 
     @NotNull
     @Override
     public String getDescription()
     {
-        return null;
+        return "Add a word as reactions letters emotes on the last message";
     }
 
     @NotNull
     @Override
     public String getSyntax()
     {
-        return null;
+        return "<word>";
     }
 
     @Override
     public boolean checkSyntax(List<String> list)
     {
-        return false;
+        return list.size() == 1;
     }
 
     @Override
