@@ -22,7 +22,6 @@ import org.sdd.shenron.command.*;
 import org.sdd.shenron.inlayer.InlayerCommandHandler;
 import org.sdd.shenron.inlayer.command.InlayerCommandMarkdown;
 import org.sdd.shenron.inlayer.command.InlayerCommandQuote;
-import org.sdd.shenron.inlayer.command.InlayerCommandWordReact;
 
 
 import static fr.litarvan.krobot.util.KrobotFunctions.*;
