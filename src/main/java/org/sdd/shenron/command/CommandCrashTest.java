@@ -6,7 +6,7 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.sdd.shenron.Shenron;
 
-public class CommandCrashTest extends Command
+public class CommandCrashTest extends ShenronCommand
 {
     @NotNull
     @Override
@@ -36,8 +36,8 @@ public class CommandCrashTest extends Command
     }
 
     @Override
-    public void handleCall(ICommandCaller iCommandCaller, List<String> list)
+    public void handle(ICommandCaller caller, List<String> args) throws Exception
     {
-        Shenron.handleCommandException(iCommandCaller, this, list, new Exception());
+        throw new Exception();
     }
 }

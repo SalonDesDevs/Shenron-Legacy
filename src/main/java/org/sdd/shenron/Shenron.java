@@ -14,6 +14,7 @@ import fr.litarvan.krobot.util.Markdown;
 import fr.litarvan.krobot.util.PermissionManager;
 import fr.minuskube.bot.discord.util.Webhook;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -125,9 +126,33 @@ public class Shenron extends Bot
                             "\n" +
                             "####################################";
 
+            // TODO: KROBOT: Send long message
+
+            List<String> toSend = new ArrayList<>();
+            int max = 2000 - mdChar(Markdown.CODE).length() * 2;
+
+            while (report.length() > max)
+            {
+                toSend.add(report.substring(0, max));
+                report = report.substring(max, report.length());
+            }
+
+            toSend.add(report);
+
             if (user.getPrivateConversation() != null)
             {
-                user.getPrivateConversation().sendMessage(mdCode(report, ""));
+                for (String message : toSend)
+                {
+                    user.getPrivateConversation().sendMessage(mdCode(message, ""));
+
+                    try
+                    {
+                        Thread.sleep(1000L);
+                    }
+                    catch (InterruptedException ignored)
+                    {
+                    }
+                }
             }
         }
         else if (caller instanceof ConsoleCommandCaller)

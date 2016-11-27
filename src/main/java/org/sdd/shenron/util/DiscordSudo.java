@@ -1,4 +1,4 @@
-package org.sdd.shenron;
+package org.sdd.shenron.util;
 
 import fr.litarvan.krobot.motor.discord.DiscordConversation;
 import fr.litarvan.krobot.motor.discord.DiscordUser;
@@ -8,6 +8,7 @@ import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.impl.JDAImpl;
 import org.json.JSONObject;
+import org.sdd.shenron.WebhookException;
 
 public final class DiscordSudo
 {

@@ -1,18 +1,16 @@
 package org.sdd.shenron.command;
 
-import fr.litarvan.krobot.command.Command;
 import fr.litarvan.krobot.command.ICommandCaller;
 import fr.litarvan.krobot.command.message.MessageCommandCaller;
 import fr.litarvan.krobot.motor.discord.DiscordConversation;
-import fr.litarvan.krobot.motor.discord.DiscordMessage;
-import java.util.Arrays;
 import java.util.List;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import org.jetbrains.annotations.NotNull;
 import org.sdd.shenron.Shenron;
+import org.sdd.shenron.util.Emoji;
 
-public class CommandWordReact extends Command
+public class CommandWordReact extends ShenronCommand
 {
     @NotNull
     @Override
@@ -42,14 +40,14 @@ public class CommandWordReact extends Command
     }
 
     @Override
-    public void handleCall(ICommandCaller iCommandCaller, List<String> args)
+    public void handle(ICommandCaller cCaller, List<String> args) throws RateLimitedException
     {
-        if (!(iCommandCaller instanceof MessageCommandCaller))
+        if (!(cCaller instanceof MessageCommandCaller))
         {
             return;
         }
 
-        MessageCommandCaller caller = (MessageCommandCaller) iCommandCaller;
+        MessageCommandCaller caller = (MessageCommandCaller) cCaller;
 
         // TODO: KROBOT: Get messages of conversation
 
@@ -59,16 +57,27 @@ public class CommandWordReact extends Command
         }
 
         DiscordConversation conversation = (DiscordConversation) caller.getConversation();
+        List<Message> lasts = conversation.getChannel().getHistory().retrievePast(2).block();
 
-        try
-        {
-            Message message = conversation.getChannel().getHistory().retrievePast(1).block().get(0);
-            System.out.println(Arrays.toString(message.getJDA().getEmotes().toArray()));
-            message.addReaction(message.getJDA().getEmoteById("a")).block();
-        }
-        catch (RateLimitedException | IllegalArgumentException e)
-        {
-            Shenron.handleCommandException(caller, this, args, e);
-        }
+        lasts.get(0).deleteMessage().block();
+
+        Emoji[] reactions = Emoji.textToEmoji(args.get(0).trim().toLowerCase());
+
+        Thread t = new Thread(() -> {
+            for (Emoji reaction : reactions)
+            {
+                try
+                {
+                    lasts.get(1).addReaction(reaction.getUnicode()).block();
+                    Thread.sleep(2000L);
+                }
+                catch (InterruptedException | RateLimitedException e)
+                {
+                    Shenron.handleCommandException(caller, CommandWordReact.this, args, e);
+                }
+            }
+        });
+
+        t.start();
     }
 }

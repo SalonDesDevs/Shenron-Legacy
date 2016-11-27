@@ -8,7 +8,7 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.sdd.shenron.Shenron;
 
-public class CommandHelp extends Command
+public class CommandHelp extends ShenronCommand
 {
     @NotNull
     @Override
@@ -38,7 +38,7 @@ public class CommandHelp extends Command
     }
 
     @Override
-    public void handleCall(ICommandCaller caller, List<String> list)
+    public void handle(ICommandCaller caller, List<String> args)
     {
         if (!(caller instanceof MessageCommandCaller))
         {

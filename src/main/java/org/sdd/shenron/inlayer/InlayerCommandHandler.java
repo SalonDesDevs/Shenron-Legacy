@@ -1,6 +1,5 @@
 package org.sdd.shenron.inlayer;
 
-import fr.litarvan.krobot.command.Command;
 import fr.litarvan.krobot.command.message.MessageCommandCaller;
 import fr.litarvan.krobot.message.IMessageListener;
 import fr.litarvan.krobot.message.MessageReceivedEvent;
@@ -12,10 +11,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
-import org.apache.commons.collections4.ListUtils;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.sdd.shenron.DiscordSudo;
+import org.sdd.shenron.util.DiscordSudo;
 import org.sdd.shenron.Shenron;
 import org.sdd.shenron.WebhookException;
 
@@ -89,7 +86,14 @@ public class InlayerCommandHandler implements IMessageListener
 
             if (call.getCommand() != null)
             {
-                result = call.getCommand().handle(call.getCaller(), result, source, parser, call.getArgs());
+                try
+                {
+                    result = call.getCommand().handle(call.getCaller(), result, source, parser, call.getArgs());
+                }
+                catch (Exception e)
+                {
+                    Shenron.handleCommandException(call.getCaller(), call.getCommand(), call.getArgs(), e);
+                }
             }
             else
             {

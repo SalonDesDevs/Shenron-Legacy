@@ -1,13 +1,12 @@
 package org.sdd.shenron.command;
 
-import fr.litarvan.krobot.command.Command;
 import fr.litarvan.krobot.command.ICommandCaller;
 import fr.litarvan.krobot.command.message.MessageCommandCaller;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.sdd.shenron.Shenron;
 
-public class CommandVersion extends Command
+public class CommandVersion extends ShenronCommand
 {
     @NotNull
     @Override
@@ -37,7 +36,7 @@ public class CommandVersion extends Command
     }
 
     @Override
-    public void handleCall(ICommandCaller caller, List<String> list)
+    public void handle(ICommandCaller caller, List<String> args)
     {
         if (caller instanceof MessageCommandCaller)
         {
