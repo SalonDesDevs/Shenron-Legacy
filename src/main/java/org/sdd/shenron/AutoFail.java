@@ -42,6 +42,7 @@ public class AutoFail implements IMessageListener
         User user = event.getUser();
         Conversation conversation = event.getConversation();
         String correction = correct(toCorrect, message);
+        conversation.sendMessage("DEBUG: " + toCorrect + ", " + message);
 
         try
         {
