@@ -7,13 +7,11 @@ import fr.litarvan.krobot.motor.Message;
 import fr.litarvan.krobot.motor.discord.DiscordConversation;
 import fr.litarvan.krobot.motor.discord.DiscordMessage;
 import fr.litarvan.krobot.motor.discord.DiscordUser;
-import fr.litarvan.krobot.util.KrobotFunctions;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
-import org.sdd.shenron.util.DiscordSudo;
-import org.sdd.shenron.Shenron;
+import org.sdd.shenron.util.MessageEditor;
 import org.sdd.shenron.WebhookException;
 
 
@@ -55,21 +53,13 @@ public class InlayerCommandHandler implements IMessageListener
 
         String parsed = apply(result.getLeft(), event.getMessage(), result.getRight().toArray(new InlayerCall[result.getRight().size()]));
 
-        if (event.getMessage() instanceof DiscordMessage)
+        try
         {
-            try
-            {
-                event.getMessage().delete();
-                DiscordSudo.sendFor((DiscordUser) event.getUser(), (DiscordConversation) event.getConversation(), parsed);
-            }
-            catch (WebhookException e)
-            {
-                handleCommandCrash(caller, null, null, e);
-            }
+            MessageEditor.edit(event.getUser(), event.getConversation(), event.getMessage(), parsed);
         }
-        else
+        catch (Exception e)
         {
-            event.getConversation().sendMessage(event.getUser().getUsername() + ": " + parsed);
+            e.printStackTrace();
         }
     }
 

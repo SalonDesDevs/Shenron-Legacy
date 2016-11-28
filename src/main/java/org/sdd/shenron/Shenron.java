@@ -1,29 +1,15 @@
 package org.sdd.shenron;
 
 import fr.litarvan.krobot.bot.*;
-import fr.litarvan.krobot.command.Command;
-import fr.litarvan.krobot.command.ICommandCaller;
-import fr.litarvan.krobot.command.message.MessageCommandCaller;
 import fr.litarvan.krobot.command.message.MessageCommandHandler;
-import fr.litarvan.krobot.console.ConsoleCommandCaller;
-import fr.litarvan.krobot.message.IMessageListener;
 import fr.litarvan.krobot.message.MessageReceivedEvent;
 import fr.litarvan.krobot.motor.IConversation;
 import fr.litarvan.krobot.motor.IMotorExtension;
-import fr.litarvan.krobot.motor.User;
-import fr.litarvan.krobot.motor.discord.DiscordMessage;
-import fr.litarvan.krobot.motor.discord.DiscordStartEvent;
 import fr.litarvan.krobot.util.Markdown;
 import fr.litarvan.krobot.util.MessageQueue;
 import fr.litarvan.krobot.util.PermissionManager;
-import fr.minuskube.bot.discord.util.Webhook;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.util.concurrent.Future;
-import net.dv8tion.jda.core.exceptions.RateLimitedException;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jetbrains.annotations.NotNull;
 import org.sdd.shenron.command.*;
 import org.sdd.shenron.inlayer.InlayerCommandHandler;
@@ -38,7 +24,7 @@ public class Shenron extends Bot
 {
     public static final String VERSION = "1.0.e";
     public static final String PREFIX = "/";
-    public static final char INLAYER_START = ';';
+    public static final char AUTO_DETECT_START = ';';
     public static final char INLAYER_PREFIX = '#';
     public static final long MESSAGE_INTERVAL = 2000L;
 
@@ -47,7 +33,8 @@ public class Shenron extends Bot
 
     private MessageCommandHandler commandHandler = new MessageCommandHandler(PREFIX);
     private PermissionManager permissionManager = new PermissionManager();
-    private InlayerCommandHandler inlayerCommandHandler = new InlayerCommandHandler(INLAYER_START, INLAYER_PREFIX);
+    private InlayerCommandHandler inlayerCommandHandler = new InlayerCommandHandler(AUTO_DETECT_START, INLAYER_PREFIX);
+    private AutoFail autoFail = new AutoFail();
     private MessageQueue queue = new MessageQueue(MESSAGE_INTERVAL);
 
     @Override
@@ -75,10 +62,11 @@ public class Shenron extends Bot
 
         addMessageListener(commandHandler);
         addMessageListener(inlayerCommandHandler);
+        addMessageListener(autoFail);
 
         info("Shenron started");
 
-        // TODO: Shenron v1.0.0 -> Delete Chuck and CrashTest, lang, permission check,
+        // TODO: Shenron v1.0.0 -> Delete Chuck and CrashTest, lang, permission check, enable/disable inlayer/auto-fail
     }
 
     @Override

@@ -2,16 +2,16 @@ package org.sdd.shenron.command;
 
 import fr.litarvan.krobot.command.ICommandCaller;
 import fr.litarvan.krobot.command.message.MessageCommandCaller;
+import fr.litarvan.krobot.motor.Conversation;
 import fr.litarvan.krobot.motor.Message;
+import fr.litarvan.krobot.motor.User;
 import fr.litarvan.krobot.motor.discord.DiscordConversation;
-import fr.litarvan.krobot.motor.discord.DiscordMessage;
 import fr.litarvan.krobot.motor.discord.DiscordUser;
-import fr.litarvan.krobot.motor.skype.SkypeMessage;
-import fr.litarvan.krobot.util.KrobotFunctions;
-import fr.litarvan.krobot.util.ResponseAnalyser;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
-import org.sdd.shenron.util.DiscordSudo;
+import org.sdd.shenron.AutoFail;
+import org.sdd.shenron.util.MessageEditor;
+import org.sdd.shenron.util.MessageSearch;
 
 
 import static fr.litarvan.krobot.util.KrobotFunctions.*;
@@ -54,57 +54,33 @@ public class CommandFail extends ShenronCommand
         }
 
         MessageCommandCaller caller = ((MessageCommandCaller) cCaller);
-        Message[] messages = caller.getConversation().messages(25);
-        Message message = null;
-
-        for (Message m : messages)
-        {
-            if (m.getAuthor().getId().equals(caller.getUser().getId()))
-            {
-                message = m;
-                break;
-            }
-        }
+        User user = caller.getUser();
+        Conversation conversation = caller.getConversation();
+        Message message = MessageSearch.findLastMessageOf(user, conversation);
 
         if (message == null)
         {
-            caller.getConversation().sendMessage(mention(caller.getUser()) + " Can't find any message you sent in the last one");
+            conversation.sendMessage(mention(user) + " Can't find any message sent by you in the last one");
             return;
         }
 
-        String toReplace = null;
-        String replaceBy = null;
-
-        message.delete();
-
-        switch (args.size())
+        if (args.size() == 0)
         {
-            case 0:
-                return;
-            case 1:
-                if (!(caller.getUser() instanceof DiscordUser))
-                {
-                    caller.getConversation().sendMessage("(" + caller.getUser().getUsername() + "): *" + args.get(0));
-                    return;
-                }
-
-                String[] split = message.getText().split(" ");
-                ResponseAnalyser analyzer = new ResponseAnalyser(args.get(0), split);
-
-                toReplace = split[analyzer.get()];
-                replaceBy = args.get(0);
-
-                break;
-            case 2:
-                toReplace = args.get(0);
-                replaceBy = args.get(1);
-
-                break;
+            message.delete();
+            return;
         }
 
-        if (toReplace != null && replaceBy != null)
+        String result = null;
+
+        if (args.size() == 1)
         {
-            DiscordSudo.sendFor((DiscordUser) caller.getUser(), (DiscordConversation) caller.getConversation(), message.getText().replace(toReplace, replaceBy));
+            result = AutoFail.correct(message, args.get(0));
         }
+        else if (args.size() == 2)
+        {
+            result = message.getText().replace(args.get(0), args.get(1));
+        }
+
+        MessageEditor.edit(user, conversation, message, result);
     }
 }

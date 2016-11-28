@@ -1,5 +1,8 @@
 package org.sdd.shenron.util;
 
+import fr.litarvan.krobot.motor.Conversation;
+import fr.litarvan.krobot.motor.Message;
+import fr.litarvan.krobot.motor.User;
 import fr.litarvan.krobot.motor.discord.DiscordConversation;
 import fr.litarvan.krobot.motor.discord.DiscordUser;
 import fr.minuskube.bot.discord.util.Webhook;
@@ -10,11 +13,31 @@ import net.dv8tion.jda.core.entities.impl.JDAImpl;
 import org.json.JSONObject;
 import org.sdd.shenron.WebhookException;
 
-public final class DiscordSudo
+public final class MessageEditor
 {
     private static boolean initialized = false;
 
-    public static void sendFor(DiscordUser user, DiscordConversation conversation, String message) throws WebhookException
+    public static void edit(User user, Conversation conversation, Message message, String content) throws Exception
+    {
+        if (user instanceof DiscordUser)
+        {
+            edit((DiscordUser) user, (DiscordConversation) conversation, content);
+            message.delete();
+        }
+        else
+        {
+            try
+            {
+                message.edit(content);
+            }
+            catch (Exception e)
+            {
+                conversation.sendMessage(user.getUsername() + ": " + content);
+            }
+        }
+    }
+
+    public static void edit(DiscordUser user, DiscordConversation conversation, String message) throws WebhookException
     {
         TextChannel channel = (TextChannel) conversation.getChannel();
         Guild guild = channel.getGuild();
