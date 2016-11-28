@@ -6,10 +6,12 @@ import fr.litarvan.krobot.command.ICommandCaller;
 import fr.litarvan.krobot.command.message.MessageCommandCaller;
 import fr.litarvan.krobot.command.message.MessageCommandHandler;
 import fr.litarvan.krobot.console.ConsoleCommandCaller;
+import fr.litarvan.krobot.message.IMessageListener;
 import fr.litarvan.krobot.message.MessageReceivedEvent;
 import fr.litarvan.krobot.motor.IConversation;
 import fr.litarvan.krobot.motor.IMotorExtension;
 import fr.litarvan.krobot.motor.User;
+import fr.litarvan.krobot.motor.discord.DiscordMessage;
 import fr.litarvan.krobot.motor.discord.DiscordStartEvent;
 import fr.litarvan.krobot.util.Markdown;
 import fr.litarvan.krobot.util.MessageQueue;
@@ -20,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Future;
+import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jetbrains.annotations.NotNull;
 import org.sdd.shenron.command.*;
@@ -96,9 +99,20 @@ public class Shenron extends Bot
         if (event.getMessage().getText().trim().toLowerCase().replace('î', 'i').contains("shenron apparait"))
         {
             sendMessage("https://giphy.com/gifs/dragon-ball-z-GCBuPi2YPNcxG", event.getConversation());
-            sendMessage(mdBold("UN HUMAIN TEL QUE VOUS N\'EST PAS APTE A FAIRE APPARAITRE SHENRON !"), event.getConversation());
+            sendMessage(mdBold("UN HUMAIN TEL QUE VOUS N'EST PAS APTE A FAIRE APPARAITRE SHENRON !"), event.getConversation());
 
             return;
+        }
+
+        if (event.getMessage().getText().startsWith(commandHandler.getPrefix()) && event.getMessage() instanceof DiscordMessage)
+        {
+            try
+            {
+                ((DiscordMessage) event.getMessage()).getMessage().deleteMessage().block();
+            }
+            catch (RateLimitedException ignored)
+            {
+            }
         }
     }
 

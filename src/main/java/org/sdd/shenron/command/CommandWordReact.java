@@ -56,10 +56,6 @@ public class CommandWordReact extends ShenronCommand
         }
 
         Message[] lasts = caller.getConversation().messages(2);
-
-        // TODO: Krobot Delete
-        ((DiscordMessage) lasts[0]).getMessage().deleteMessage().block();
-
         Emoji[] reactions = Emoji.textToEmoji(args.get(0).trim().toLowerCase());
 
         Thread t = new Thread(() -> {

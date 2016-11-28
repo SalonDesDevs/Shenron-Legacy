@@ -5,9 +5,6 @@ import fr.litarvan.krobot.command.ICommandCaller;
 import java.util.List;
 import org.sdd.shenron.Shenron;
 
-/**
- * Created by litarvan on 27/11/16.
- */
 public abstract class ShenronCommand extends Command
 {
     @Override
