@@ -47,7 +47,7 @@ public class AutoFail implements IMessageListener
 
         try
         {
-            MessageEditor.edit(user, conversation, event.getMessage(), correction);
+            MessageEditor.edit(user, conversation, toCorrect, correction);
         }
         catch (Exception e)
         {
