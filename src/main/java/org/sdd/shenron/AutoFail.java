@@ -52,8 +52,6 @@ public class AutoFail implements IMessageListener
         ResponseAnalyser analyser = new ResponseAnalyser(correction, split);
         String toReplace = split[analyser.get()];
 
-        message.delete();
-
         return text.replace(toReplace, correction);
     }
 
