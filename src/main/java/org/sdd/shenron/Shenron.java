@@ -7,16 +7,19 @@ import fr.litarvan.krobot.command.message.MessageCommandCaller;
 import fr.litarvan.krobot.command.message.MessageCommandHandler;
 import fr.litarvan.krobot.console.ConsoleCommandCaller;
 import fr.litarvan.krobot.message.MessageReceivedEvent;
+import fr.litarvan.krobot.motor.IConversation;
 import fr.litarvan.krobot.motor.IMotorExtension;
 import fr.litarvan.krobot.motor.User;
 import fr.litarvan.krobot.motor.discord.DiscordStartEvent;
 import fr.litarvan.krobot.util.Markdown;
+import fr.litarvan.krobot.util.MessageQueue;
 import fr.litarvan.krobot.util.PermissionManager;
 import fr.minuskube.bot.discord.util.Webhook;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Future;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jetbrains.annotations.NotNull;
 import org.sdd.shenron.command.*;
@@ -34,6 +37,7 @@ public class Shenron extends Bot
     public static final String PREFIX = "/";
     public static final char INLAYER_START = ';';
     public static final char INLAYER_PREFIX = '#';
+    public static final long MESSAGE_INTERVAL = 2000L;
 
     private File folder = new File(krobot().getFolder(), "shenron");
     private File permissionsFile = new File(folder, "permissions.json");
@@ -41,6 +45,7 @@ public class Shenron extends Bot
     private MessageCommandHandler commandHandler = new MessageCommandHandler(PREFIX);
     private PermissionManager permissionManager = new PermissionManager();
     private InlayerCommandHandler inlayerCommandHandler = new InlayerCommandHandler(INLAYER_START, INLAYER_PREFIX);
+    private MessageQueue queue = new MessageQueue(MESSAGE_INTERVAL);
 
     @Override
     public void onStart(StartEvent startEvent)
@@ -84,8 +89,8 @@ public class Shenron extends Bot
 
         if (event.getMessage().getText().trim().toLowerCase().replace('î', 'i').contains("shenron apparait"))
         {
-            event.getConversation().sendMessage("https://giphy.com/gifs/dragon-ball-z-GCBuPi2YPNcxG");
-            event.getConversation().sendMessage(mdBold("UN HUMAIN TEL QUE VOUS N\'EST PAS APTE A FAIRE APPARAITRE SHENRON !"));
+            sendMessage("https://giphy.com/gifs/dragon-ball-z-GCBuPi2YPNcxG", event.getConversation());
+            sendMessage(mdBold("UN HUMAIN TEL QUE VOUS N\'EST PAS APTE A FAIRE APPARAITRE SHENRON !"), event.getConversation());
 
             return;
         }
@@ -126,24 +131,13 @@ public class Shenron extends Bot
                             "\n" +
                             "####################################";
 
-            // TODO: KROBOT: Send long message
-
-            List<String> toSend = new ArrayList<>();
-            int max = 2000 - mdChar(Markdown.CODE).length() * 2;
-
-            while (report.length() > max)
-            {
-                toSend.add(report.substring(0, max));
-                report = report.substring(max, report.length());
-            }
-
-            toSend.add(report);
+            // TODO: KROBOT: JDA 96 + Emoji
 
             if (user.getPrivateConversation() != null)
             {
-                for (String message : toSend)
+                for (String message : splitLongMessage(report, 2000 - mdChar(Markdown.CODE).length() * 2))
                 {
-                    user.getPrivateConversation().sendMessage(mdCode(message, ""));
+                    Shenron.get().sendMessage(mdCode(message, ""), user.getPrivateConversation());
 
                     try
                     {
@@ -180,6 +174,11 @@ public class Shenron extends Bot
     public String getVersion()
     {
         return VERSION;
+    }
+
+    public Future<Void> sendMessage(String message, IConversation conversation)
+    {
+        return queue.push(message, conversation);
     }
 
     @NotNull

@@ -40,7 +40,7 @@ public class CommandVersion extends ShenronCommand
     {
         if (caller instanceof MessageCommandCaller)
         {
-            ((MessageCommandCaller) caller).getConversation().sendMessage("Shenron v" + Shenron.get().getVersion());
+            Shenron.get().sendMessage("Shenron v" + Shenron.get().getVersion(), ((MessageCommandCaller) caller).getConversation());
         }
     }
 }

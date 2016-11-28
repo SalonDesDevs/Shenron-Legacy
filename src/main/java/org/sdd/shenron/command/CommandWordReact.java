@@ -2,9 +2,10 @@ package org.sdd.shenron.command;
 
 import fr.litarvan.krobot.command.ICommandCaller;
 import fr.litarvan.krobot.command.message.MessageCommandCaller;
+import fr.litarvan.krobot.motor.Message;
 import fr.litarvan.krobot.motor.discord.DiscordConversation;
+import fr.litarvan.krobot.motor.discord.DiscordMessage;
 import java.util.List;
-import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import org.jetbrains.annotations.NotNull;
 import org.sdd.shenron.Shenron;
@@ -49,17 +50,15 @@ public class CommandWordReact extends ShenronCommand
 
         MessageCommandCaller caller = (MessageCommandCaller) cCaller;
 
-        // TODO: KROBOT: Get messages of conversation
-
         if (!(caller.getConversation() instanceof DiscordConversation))
         {
             return;
         }
 
-        DiscordConversation conversation = (DiscordConversation) caller.getConversation();
-        List<Message> lasts = conversation.getChannel().getHistory().retrievePast(2).block();
+        Message[] lasts = caller.getConversation().messages(2);
 
-        lasts.get(0).deleteMessage().block();
+        // TODO: Krobot Delete
+        ((DiscordMessage) lasts[0]).getMessage().deleteMessage().block();
 
         Emoji[] reactions = Emoji.textToEmoji(args.get(0).trim().toLowerCase());
 
@@ -68,7 +67,8 @@ public class CommandWordReact extends ShenronCommand
             {
                 try
                 {
-                    lasts.get(1).addReaction(reaction.getUnicode()).block();
+                    // TODO: Krobot Request Queue
+                    ((DiscordMessage) lasts[1]).getMessage().addReaction(reaction.getUnicode()).block();
                     Thread.sleep(2000L);
                 }
                 catch (InterruptedException | RateLimitedException e)

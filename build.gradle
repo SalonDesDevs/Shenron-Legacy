@@ -45,7 +45,7 @@ task dist(type: Jar) {
 }
 
 dependencies {
-    compile('fr.litarvan.krobot:krobot:1.4.3') {
+    compile('fr.litarvan.krobot:krobot:1.5.0') {
         exclude group: 'net.dv8tion'
     }
 

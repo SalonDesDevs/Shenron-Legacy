@@ -53,6 +53,6 @@ public class CommandHelp extends ShenronCommand
                         "        " + c.getDescription() + "\n");
         }
 
-        ((MessageCommandCaller) caller).getConversation().sendMessage(message);
+        Shenron.get().sendMessage(message, ((MessageCommandCaller) caller).getConversation());
     }
 }

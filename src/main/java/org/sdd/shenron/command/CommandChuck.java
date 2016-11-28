@@ -62,6 +62,6 @@ public class CommandChuck extends ShenronCommand
         String result = json.getAsJsonObject().get("value").getAsJsonObject().get("joke").getAsString();
         String quote = result.replaceAll("&quot;", "\"");
 
-        ((MessageCommandCaller) caller).getConversation().sendMessage(Markdown.mdEmphasis(quote));
+        Shenron.get().sendMessage(Markdown.mdEmphasis(quote), ((MessageCommandCaller) caller).getConversation());
     }
 }
