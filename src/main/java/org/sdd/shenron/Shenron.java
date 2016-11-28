@@ -77,6 +77,8 @@ public class Shenron extends Bot
         addMessageListener(inlayerCommandHandler);
 
         info("Shenron started");
+
+        // TODO: Shenron v1.0.0 -> Delete Chuck and CrashTest, lang, permission check,
     }
 
     @Override
