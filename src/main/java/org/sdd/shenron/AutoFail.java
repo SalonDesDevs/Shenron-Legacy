@@ -32,6 +32,8 @@ public class AutoFail implements IMessageListener
             }
         }
 
+        event.getMessage().delete();
+
         Message toCorrect = MessageSearch.findLastMessageOf(event.getUser(), event.getConversation());
 
         if (toCorrect == null)
@@ -41,8 +43,7 @@ public class AutoFail implements IMessageListener
 
         User user = event.getUser();
         Conversation conversation = event.getConversation();
-        String correction = correct(toCorrect, message);
-        conversation.sendMessage("DEBUG: " + toCorrect + ", " + message);
+        String correction = correct(toCorrect, message.substring(2));
 
         try
         {
@@ -51,10 +52,7 @@ public class AutoFail implements IMessageListener
         catch (Exception e)
         {
             e.printStackTrace();
-            return;
         }
-
-        event.getMessage().delete();
     }
 
     public static String correct(Message message, String correction)
