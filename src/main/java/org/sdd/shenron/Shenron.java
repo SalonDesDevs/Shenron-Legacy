@@ -33,7 +33,7 @@ import static fr.litarvan.krobot.util.Markdown.*;
 
 public class Shenron extends Bot
 {
-    public static final String VERSION = "1.0.0";
+    public static final String VERSION = "1.0.e";
     public static final String PREFIX = "/";
     public static final char INLAYER_START = ';';
     public static final char INLAYER_PREFIX = '#';
@@ -57,7 +57,13 @@ public class Shenron extends Bot
             permissionManager.load(permissionsFile);
         }
 
-        commandHandler.register(new CommandChuck(), new CommandCrashTest(), new CommandHelp(), new CommandVersion(), new CommandWordReact());
+        commandHandler.register(new CommandChuck(),
+                                new CommandCrashTest(),
+                                new CommandHelp(),
+                                new CommandVersion(),
+                                new CommandWordReact(),
+                                new CommandFail());
+
         inlayerCommandHandler.register(new InlayerCommandQuote(),
                                        new InlayerCommandMarkdown("bold", 'b', Markdown.BOLD, "bold"),
                                        new InlayerCommandMarkdown("italic", 'i', Markdown.EMPHASIS, "italic"),
@@ -108,6 +114,7 @@ public class Shenron extends Bot
 
     public static void handleCommandException(@NotNull ICommandCaller caller, Command command, List<String> args, Exception ex)
     {
+        // TODO: KROBOT: Integrate this to Krobot
         // TODO: Send message to the admin
 
         if (caller instanceof MessageCommandCaller)
