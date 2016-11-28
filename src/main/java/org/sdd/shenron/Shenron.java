@@ -115,56 +115,6 @@ public class Shenron extends Bot
         logger().error(prefix() + " " + message);
     }
 
-    public static void handleCommandException(@NotNull ICommandCaller caller, Command command, List<String> args, Exception ex)
-    {
-        // TODO: KROBOT: Integrate this to Krobot
-        // TODO: Send message to the admin
-
-        if (caller instanceof MessageCommandCaller)
-        {
-            MessageCommandCaller commandCaller = (MessageCommandCaller) caller;
-            User user = commandCaller.getUser();
-
-            commandCaller.getConversation().sendMessage("Sorry ! An exception was thrown" + (command == null ? "" : " while executing command " + PREFIX + command.getCommand()) + "\nI sent you a crash report, " + mdUnderline("send it to the developers asap !"));
-
-            String report = "####################################\n" +
-                            "\n" +
-                            "Shenron command crash report\n" +
-                            "\n" +
-                            "Version : " + bot().getVersion() + "\n" +
-                            (command == null ? "" : "Command : /" + command.getCommand() + " (" + command.getClass().getName() + ")\n") +
-                            (args == null ? "" : "Args    : " + String.join("; ", args) + "\n") +
-                            "Caller  : " + user.getUsername() + "\n" +
-                            "Time    : " + new Date() + "\n" +
-                            "\n" +
-                            ExceptionUtils.getStackTrace(ex) + "\n" +
-                            "\n" +
-                            "####################################";
-
-            // TODO: KROBOT: JDA 96 + Emoji
-
-            if (user.getPrivateConversation() != null)
-            {
-                for (String message : splitLongMessage(report, 2000 - mdChar(Markdown.CODE).length() * 2))
-                {
-                    Shenron.get().sendMessage(mdCode(message, ""), user.getPrivateConversation());
-
-                    try
-                    {
-                        Thread.sleep(1000L);
-                    }
-                    catch (InterruptedException ignored)
-                    {
-                    }
-                }
-            }
-        }
-        else if (caller instanceof ConsoleCommandCaller)
-        {
-            logger().error(prefix() + " Exception thrown while executing command /" + command.getCommand() + " " + String.join(" ", args), ex);
-        }
-    }
-
     @NotNull
     @Override
     public String getName()

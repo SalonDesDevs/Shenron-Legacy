@@ -7,6 +7,7 @@ import fr.litarvan.krobot.motor.Message;
 import fr.litarvan.krobot.motor.discord.DiscordConversation;
 import fr.litarvan.krobot.motor.discord.DiscordMessage;
 import fr.litarvan.krobot.motor.discord.DiscordUser;
+import fr.litarvan.krobot.util.KrobotFunctions;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -14,6 +15,9 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.sdd.shenron.util.DiscordSudo;
 import org.sdd.shenron.Shenron;
 import org.sdd.shenron.WebhookException;
+
+
+import static fr.litarvan.krobot.util.KrobotFunctions.*;
 
 public class InlayerCommandHandler implements IMessageListener
 {
@@ -60,7 +64,7 @@ public class InlayerCommandHandler implements IMessageListener
             }
             catch (WebhookException e)
             {
-                Shenron.handleCommandException(caller, null, null, e);
+                handleCommandCrash(caller, null, null, e);
             }
         }
         else
@@ -89,7 +93,7 @@ public class InlayerCommandHandler implements IMessageListener
                 }
                 catch (Exception e)
                 {
-                    Shenron.handleCommandException(call.getCaller(), call.getCommand(), call.getArgs(), e);
+                    handleCommandCrash(call.getCaller(), call.getCommand(), call.getArgs(), e);
                 }
             }
             else

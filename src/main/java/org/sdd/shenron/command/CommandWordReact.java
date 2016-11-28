@@ -5,11 +5,15 @@ import fr.litarvan.krobot.command.message.MessageCommandCaller;
 import fr.litarvan.krobot.motor.Message;
 import fr.litarvan.krobot.motor.discord.DiscordConversation;
 import fr.litarvan.krobot.motor.discord.DiscordMessage;
+import fr.litarvan.krobot.util.KrobotFunctions;
 import fr.litarvan.krobot.util.TextEmoji;
 import java.util.List;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import org.jetbrains.annotations.NotNull;
 import org.sdd.shenron.Shenron;
+
+
+import static fr.litarvan.krobot.util.KrobotFunctions.*;
 
 public class CommandWordReact extends ShenronCommand
 {
@@ -64,11 +68,11 @@ public class CommandWordReact extends ShenronCommand
                 try
                 {
                     ((DiscordMessage) lasts[0]).getMessage().addReaction(reaction.getUnicode()).block();
-                    Thread.sleep(2000L);
+                    Thread.sleep(2250L);
                 }
                 catch (InterruptedException | RateLimitedException e)
                 {
-                    Shenron.handleCommandException(caller, CommandWordReact.this, args, e);
+                    handleCommandCrash(caller, CommandWordReact.this, args, e);
                 }
             }
         });

@@ -6,10 +6,14 @@ import fr.litarvan.krobot.command.message.MessageCommandCaller;
 import fr.litarvan.krobot.motor.Message;
 import fr.litarvan.krobot.motor.discord.DiscordMessage;
 import fr.litarvan.krobot.motor.discord.DiscordUser;
+import fr.litarvan.krobot.util.KrobotFunctions;
 import java.util.List;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import org.sdd.shenron.Shenron;
+
+
+import static fr.litarvan.krobot.util.KrobotFunctions.*;
 
 public abstract class ShenronCommand extends Command
 {
@@ -24,16 +28,13 @@ public abstract class ShenronCommand extends Command
         MessageCommandCaller caller = (MessageCommandCaller) iCommandCaller;
         caller.getMessage().delete();
 
-        Message message = caller.getConversation().messages(1)[0];
-
         try
         {
-            message.delete();
             handle(iCommandCaller, list);
         }
         catch (Exception e)
         {
-            Shenron.handleCommandException(iCommandCaller, this, list, e);
+            handleCommandCrash(iCommandCaller, this, list, e);
         }
     }
 
