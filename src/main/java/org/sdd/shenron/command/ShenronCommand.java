@@ -7,6 +7,7 @@ import fr.litarvan.krobot.motor.Message;
 import fr.litarvan.krobot.motor.discord.DiscordMessage;
 import fr.litarvan.krobot.motor.discord.DiscordUser;
 import java.util.List;
+import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import org.sdd.shenron.Shenron;
 
@@ -26,7 +27,9 @@ public abstract class ShenronCommand extends Command
         MessageCommandCaller caller = (MessageCommandCaller) iCommandCaller;
         if (caller.getUser() instanceof DiscordUser)
         {
-            if (((DiscordUser) caller.getUser()).getUser().isBot())
+            User user = ((DiscordUser) caller.getUser()).getUser();
+
+            if (user.isBot() || user.isFake())
             {
                 return;
             }
