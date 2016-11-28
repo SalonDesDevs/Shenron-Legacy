@@ -5,6 +5,7 @@ import fr.litarvan.krobot.command.ICommandCaller;
 import fr.litarvan.krobot.command.message.MessageCommandCaller;
 import fr.litarvan.krobot.motor.Message;
 import fr.litarvan.krobot.motor.discord.DiscordMessage;
+import fr.litarvan.krobot.motor.discord.DiscordUser;
 import java.util.List;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import org.sdd.shenron.Shenron;
@@ -15,7 +16,23 @@ public abstract class ShenronCommand extends Command
     public final void handleCall(ICommandCaller iCommandCaller, List<String> list)
     {
         // TODO: KROBOT: Message
-        Message message = ((MessageCommandCaller) iCommandCaller).getConversation().messages(1)[0];
+        // TODO: KROBOT: Do not open conversation on Webhook
+
+        if (!(iCommandCaller instanceof MessageCommandCaller))
+        {
+            return;
+        }
+
+        MessageCommandCaller caller = (MessageCommandCaller) iCommandCaller;
+        if (caller.getUser() instanceof DiscordUser)
+        {
+            if (((DiscordUser) caller.getUser()).getUser().isBot())
+            {
+                return;
+            }
+        }
+
+        Message message = caller.getConversation().messages(1)[0];
 
         try
         {

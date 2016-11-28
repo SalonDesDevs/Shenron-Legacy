@@ -67,15 +67,15 @@ public class CommandFail extends ShenronCommand
         String toReplace = null;
         String replaceBy = null;
 
+        if (message instanceof DiscordMessage)
+        {
+            // TODO: KROBOT: Delete message
+            ((DiscordMessage) message).getMessage().deleteMessage().block();
+        }
+
         switch (args.size())
         {
             case 0:
-                if (message instanceof DiscordMessage)
-                {
-                    // TODO: KROBOT: Delete message
-                    ((DiscordMessage) message).getMessage().deleteMessage().block();
-                }
-
                 return;
             case 1:
                 if (!(caller.getUser() instanceof DiscordUser))
