@@ -47,9 +47,7 @@ public class Shenron extends Bot
             permissionManager.load(permissionsFile);
         }
 
-        commandHandler.register(new CommandChuck(),
-                                new CommandCrashTest(),
-                                new CommandHelp(),
+        commandHandler.register(new CommandHelp(),
                                 new CommandVersion(),
                                 new CommandWordReact(),
                                 new CommandFail());

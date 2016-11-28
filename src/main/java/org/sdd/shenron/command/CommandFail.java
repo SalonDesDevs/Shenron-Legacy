@@ -22,7 +22,7 @@ public class CommandFail extends ShenronCommand
     @Override
     public String getCommand()
     {
-        return "fail";
+        return "f";
     }
 
     @NotNull
