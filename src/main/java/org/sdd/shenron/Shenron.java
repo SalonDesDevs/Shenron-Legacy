@@ -103,17 +103,6 @@ public class Shenron extends Bot
 
             return;
         }
-
-        if (event.getMessage().getText().startsWith(commandHandler.getPrefix()) && event.getMessage() instanceof DiscordMessage)
-        {
-            try
-            {
-                ((DiscordMessage) event.getMessage()).getMessage().deleteMessage().block();
-            }
-            catch (RateLimitedException ignored)
-            {
-            }
-        }
     }
 
     public void info(String message)
