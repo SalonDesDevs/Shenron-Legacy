@@ -16,34 +16,19 @@ public abstract class ShenronCommand extends Command
     @Override
     public final void handleCall(ICommandCaller iCommandCaller, List<String> list)
     {
-        // TODO: KROBOT: Message
-        // TODO: KROBOT: Do not open conversation on Webhook
-
         if (!(iCommandCaller instanceof MessageCommandCaller))
         {
             return;
         }
 
         MessageCommandCaller caller = (MessageCommandCaller) iCommandCaller;
-        if (caller.getUser() instanceof DiscordUser)
-        {
-            User user = ((DiscordUser) caller.getUser()).getUser();
-
-            if (user.isBot() || user.isFake())
-            {
-                return;
-            }
-        }
+        caller.getMessage().delete();
 
         Message message = caller.getConversation().messages(1)[0];
 
         try
         {
-            if (message instanceof DiscordMessage)
-            {
-                ((DiscordMessage) message).getMessage().deleteMessage().block();
-            }
-
+            message.delete();
             handle(iCommandCaller, list);
         }
         catch (Exception e)

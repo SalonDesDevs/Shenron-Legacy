@@ -10,7 +10,6 @@ import fr.litarvan.krobot.motor.discord.DiscordUser;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import org.apache.commons.lang3.tuple.Pair;
 import org.sdd.shenron.util.DiscordSudo;
 import org.sdd.shenron.Shenron;
@@ -41,7 +40,7 @@ public class InlayerCommandHandler implements IMessageListener
 
         message = message.substring(1);
 
-        MessageCommandCaller caller = new MessageCommandCaller(event.getUser(), event.getConversation());
+        MessageCommandCaller caller = new MessageCommandCaller(event.getUser(), event.getMessage(), event.getConversation());
         InlayerParser parser = new InlayerParser(caller, message, prefix, this);
         Pair<String, List<InlayerCall>> result = parser.get();
 
@@ -54,14 +53,12 @@ public class InlayerCommandHandler implements IMessageListener
 
         if (event.getMessage() instanceof DiscordMessage)
         {
-            DiscordMessage discordMessage = (DiscordMessage) event.getMessage();
-
             try
             {
-                discordMessage.getMessage().deleteMessage().block();
+                event.getMessage().delete();
                 DiscordSudo.sendFor((DiscordUser) event.getUser(), (DiscordConversation) event.getConversation(), parsed);
             }
-            catch (RateLimitedException | WebhookException e)
+            catch (WebhookException e)
             {
                 Shenron.handleCommandException(caller, null, null, e);
             }

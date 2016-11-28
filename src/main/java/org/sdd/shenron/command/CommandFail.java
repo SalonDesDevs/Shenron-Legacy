@@ -13,6 +13,9 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.sdd.shenron.util.DiscordSudo;
 
+
+import static fr.litarvan.krobot.util.KrobotFunctions.*;
+
 public class CommandFail extends ShenronCommand
 {
     @NotNull
@@ -45,6 +48,11 @@ public class CommandFail extends ShenronCommand
     @Override
     public void handle(ICommandCaller cCaller, List<String> args) throws Exception
     {
+        if (!(cCaller instanceof MessageCommandCaller))
+        {
+            return;
+        }
+
         MessageCommandCaller caller = ((MessageCommandCaller) cCaller);
         Message[] messages = caller.getConversation().messages(25);
         Message message = null;
@@ -60,18 +68,14 @@ public class CommandFail extends ShenronCommand
 
         if (message == null)
         {
-            caller.getConversation().sendMessage(KrobotFunctions.mention(caller.getUser()) + " Can't find any message you sent in the last one");
+            caller.getConversation().sendMessage(mention(caller.getUser()) + " Can't find any message you sent in the last one");
             return;
         }
 
         String toReplace = null;
         String replaceBy = null;
 
-        if (message instanceof DiscordMessage)
-        {
-            // TODO: KROBOT: Delete message
-            ((DiscordMessage) message).getMessage().deleteMessage().block();
-        }
+        message.delete();
 
         switch (args.size())
         {
