@@ -5,6 +5,8 @@ import fr.litarvan.krobot.message.MessageReceivedEvent;
 import fr.litarvan.krobot.motor.Conversation;
 import fr.litarvan.krobot.motor.Message;
 import fr.litarvan.krobot.motor.User;
+import fr.litarvan.krobot.motor.discord.DiscordMessage;
+import fr.litarvan.krobot.motor.discord.DiscordUser;
 import fr.litarvan.krobot.util.ResponseAnalyser;
 import org.sdd.shenron.util.MessageEditor;
 import org.sdd.shenron.util.MessageSearch;
@@ -19,6 +21,15 @@ public class AutoFail implements IMessageListener
         if (!message.startsWith(Shenron.AUTO_DETECT_START + "*"))
         {
             return;
+        }
+        else if (event.getUser() instanceof DiscordUser)
+        {
+            DiscordUser user = (DiscordUser) event.getUser();
+
+            if (user.getUser().isBot() || user.getUser().isFake())
+            {
+                return;
+            }
         }
 
         Message toCorrect = MessageSearch.findLastMessageOf(event.getUser(), event.getConversation());
