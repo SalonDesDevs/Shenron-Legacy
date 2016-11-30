@@ -8,6 +8,9 @@ import fr.litarvan.krobot.motor.discord.DiscordMessage;
 import fr.litarvan.krobot.util.KrobotFunctions;
 import fr.litarvan.krobot.util.TextEmoji;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import org.jetbrains.annotations.NotNull;
 import org.sdd.shenron.Shenron;
@@ -17,6 +20,8 @@ import static fr.litarvan.krobot.util.KrobotFunctions.*;
 
 public class CommandWordReact extends ShenronCommand
 {
+    private static ExecutorService pool = Executors.newSingleThreadExecutor();
+
     @NotNull
     @Override
     public String getCommand()
@@ -62,9 +67,9 @@ public class CommandWordReact extends ShenronCommand
         Message[] lasts = caller.getConversation().messages(1);
         TextEmoji[] reactions = TextEmoji.Companion.toEmoji(args.get(0).trim().toLowerCase());
 
-        Thread t = new Thread(() -> {
-            for (TextEmoji reaction : reactions)
-            {
+        for (TextEmoji reaction : reactions)
+        {
+            pool.submit(() -> {
                 try
                 {
                     ((DiscordMessage) lasts[0]).getMessage().addReaction(reaction.getUnicode()).block();
@@ -74,9 +79,7 @@ public class CommandWordReact extends ShenronCommand
                 {
                     handleCommandCrash(caller, CommandWordReact.this, args, e);
                 }
-            }
-        });
-
-        t.start();
+            });
+        }
     }
 }
