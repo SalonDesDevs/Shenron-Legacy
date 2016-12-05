@@ -129,7 +129,7 @@ public class InlayerCommandQuote extends InlayerCommand
                     fake = user.getUser().isFake() || user.getUser().isBot();
                 }
 
-                if (msg.getText().toLowerCase().contains(query.toLowerCase()) && !msg.getText().startsWith(Character.toString(Shenron.AUTO_DETECT_START)))
+                if (msg.getText().toLowerCase().contains(query.toLowerCase()) && !fake && !msg.getText().startsWith(Character.toString(Shenron.AUTO_DETECT_START)))
                 {
                     return msg;
                 }
