@@ -51,12 +51,6 @@ public class CommandTextToEmoji extends ShenronCommand
             return;
         }
 
-        if (CHAR_TO_EMOJI == null)
-        {
-            ((MessageCommandCaller) caller).getConversation().sendMessage("Sorry, can't use the TextToEmoji command since there was an error tyring to get the Char -> Emoji table");
-            return;
-        }
-
         String message = Strings.join(args, " ");
         String result = toEmoji(message);
 
@@ -65,7 +59,6 @@ public class CommandTextToEmoji extends ShenronCommand
 
     public static String toEmoji(String text)
     {
-        ArrayList<TextEmoji> emojis = new ArrayList<>();
         String result = "";
 
         for (char c : text.toCharArray())
@@ -76,7 +69,7 @@ public class CommandTextToEmoji extends ShenronCommand
             }
             else
             {
-                result += CHAR_TO_EMOJI.get(c)[0].getUnicode();
+                result += CHAR_TO_EMOJI.get(c).getUnicode();
             }
 
             result += " ";
@@ -85,16 +78,46 @@ public class CommandTextToEmoji extends ShenronCommand
         return result;
     }
 
-    private static HashMap<Character, TextEmoji[]> CHAR_TO_EMOJI;
+    private static HashMap<Character, TextEmoji> CHAR_TO_EMOJI;
 
     static
     {
-        try
-        {
-            CHAR_TO_EMOJI = (HashMap<Character, TextEmoji[]>) TextEmoji.Companion.getClass().getField("CHAR_TO_EMOJI").get(null);
-        }
-        catch (Exception ignored)
-        {
-        }
+        // TODO: KROBOT: Fix that
+
+        CHAR_TO_EMOJI.put('a', TextEmoji.RI_A);
+        CHAR_TO_EMOJI.put('b', TextEmoji.RI_B);
+        CHAR_TO_EMOJI.put('c', TextEmoji.RI_C);
+        CHAR_TO_EMOJI.put('d', TextEmoji.RI_D);
+        CHAR_TO_EMOJI.put('e', TextEmoji.RI_E);
+        CHAR_TO_EMOJI.put('f', TextEmoji.RI_F);
+        CHAR_TO_EMOJI.put('g', TextEmoji.RI_G);
+        CHAR_TO_EMOJI.put('h', TextEmoji.RI_H);
+        CHAR_TO_EMOJI.put('i', TextEmoji.RI_I);
+        CHAR_TO_EMOJI.put('j', TextEmoji.RI_J);
+        CHAR_TO_EMOJI.put('k', TextEmoji.RI_K);
+        CHAR_TO_EMOJI.put('l', TextEmoji.RI_L);
+        CHAR_TO_EMOJI.put('m', TextEmoji.RI_M);
+        CHAR_TO_EMOJI.put('n', TextEmoji.RI_N);
+        CHAR_TO_EMOJI.put('o', TextEmoji.RI_O);
+        CHAR_TO_EMOJI.put('p', TextEmoji.RI_P);
+        CHAR_TO_EMOJI.put('q', TextEmoji.RI_Q);
+        CHAR_TO_EMOJI.put('r', TextEmoji.RI_R);
+        CHAR_TO_EMOJI.put('s', TextEmoji.RI_S);
+        CHAR_TO_EMOJI.put('t', TextEmoji.RI_T);
+        CHAR_TO_EMOJI.put('u', TextEmoji.RI_U);
+        CHAR_TO_EMOJI.put('v', TextEmoji.RI_V);
+        CHAR_TO_EMOJI.put('w', TextEmoji.RI_W);
+        CHAR_TO_EMOJI.put('x', TextEmoji.RI_X);
+        CHAR_TO_EMOJI.put('y', TextEmoji.RI_Y);
+        CHAR_TO_EMOJI.put('z', TextEmoji.RI_Z);
+        CHAR_TO_EMOJI.put('1', TextEmoji.ONE);
+        CHAR_TO_EMOJI.put('2', TextEmoji.TWO);
+        CHAR_TO_EMOJI.put('3', TextEmoji.THREE);
+        CHAR_TO_EMOJI.put('4', TextEmoji.FOUR);
+        CHAR_TO_EMOJI.put('5', TextEmoji.FIVE);
+        CHAR_TO_EMOJI.put('6', TextEmoji.SIX);
+        CHAR_TO_EMOJI.put('7', TextEmoji.SEVEN);
+        CHAR_TO_EMOJI.put('8', TextEmoji.EIGHT);
+        CHAR_TO_EMOJI.put('9', TextEmoji.NINE);
     }
 }
