@@ -55,7 +55,7 @@ public class CommandTextToEmoji extends ShenronCommand
 
         for (TextEmoji emoji : toEmoji)
         {
-            result += emoji.getUnicode()/* + " "*/;
+            result += emoji.getUnicode() + " ";
         }
 
         MessageEditor.edit(((MessageCommandCaller) caller).getUser(), ((MessageCommandCaller) caller).getConversation(), ((MessageCommandCaller) caller).getMessage(), result, false);
