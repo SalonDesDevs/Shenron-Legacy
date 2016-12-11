@@ -58,6 +58,6 @@ public class CommandTextToEmoji extends ShenronCommand
             result += emoji.getUnicode()/* + " "*/;
         }
 
-        MessageEditor.edit(((MessageCommandCaller) caller).getUser(), ((MessageCommandCaller) caller).getConversation(), ((MessageCommandCaller) caller).getMessage(), result);
+        MessageEditor.edit(((MessageCommandCaller) caller).getUser(), ((MessageCommandCaller) caller).getConversation(), ((MessageCommandCaller) caller).getMessage(), result, false);
     }
 }

@@ -19,10 +19,19 @@ public final class MessageEditor
 
     public static void edit(User user, Conversation conversation, Message message, String content) throws Exception
     {
+        edit(user, conversation, message, content, true);
+    }
+
+    public static void edit(User user, Conversation conversation, Message message, String content, boolean delete) throws Exception
+    {
         if (user instanceof DiscordUser)
         {
             edit((DiscordUser) user, (DiscordConversation) conversation, content);
-            message.delete();
+
+            if (delete)
+            {
+                message.delete();
+            }
         }
         else
         {
