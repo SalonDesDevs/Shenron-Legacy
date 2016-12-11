@@ -61,7 +61,7 @@ public class CommandTextToEmoji extends ShenronCommand
     {
         String result = "";
 
-        for (char c : text.toCharArray())
+        for (char c : text.toLowerCase().toCharArray())
         {
             if (!CHAR_TO_EMOJI.containsKey(c))
             {
