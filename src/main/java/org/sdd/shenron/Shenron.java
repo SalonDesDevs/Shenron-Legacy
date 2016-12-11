@@ -50,7 +50,8 @@ public class Shenron extends Bot
         commandHandler.register(new CommandHelp(),
                                 new CommandVersion(),
                                 new CommandWordReact(),
-                                new CommandFail());
+                                new CommandFail(),
+                                new CommandTextToEmoji());
 
         inlayerCommandHandler.register(new InlayerCommandQuote(),
                                        new InlayerCommandMarkdown("bold", 'b', Markdown.BOLD, "bold"),
