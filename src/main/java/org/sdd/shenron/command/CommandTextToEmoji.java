@@ -78,7 +78,7 @@ public class CommandTextToEmoji extends ShenronCommand
         return result;
     }
 
-    private static HashMap<Character, TextEmoji> CHAR_TO_EMOJI;
+    private static final HashMap<Character, TextEmoji> CHAR_TO_EMOJI = new HashMap<>();
 
     static
     {
