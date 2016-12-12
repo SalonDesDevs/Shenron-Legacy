@@ -55,7 +55,8 @@ public class Shenron extends Bot
                                 new CommandWordReact(),
                                 new CommandFail(),
                                 new CommandTextToEmoji(),
-                                new CommandOsef());
+                                new CommandOsef(),
+                                new CommandTriggered());
 
         inlayerCommandHandler.register(new InlayerCommandQuote(),
                                        new InlayerCommandOsef(),
