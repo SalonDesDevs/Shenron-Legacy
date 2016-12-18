@@ -70,15 +70,24 @@ public class CommandWordReact extends ShenronCommand
         for (TextEmoji reaction : reactions)
         {
             pool.submit(() -> {
-                try
+                long time = 500L;
+                boolean retry = false;
+
+                do
                 {
-                    ((DiscordMessage) lasts[0]).getMessage().addReaction(reaction.getUnicode()).block();
-                    Thread.sleep(2250L);
+                    try
+                    {
+                        ((DiscordMessage) lasts[0]).getMessage().addReaction(reaction.getUnicode()).block();
+                        Thread.sleep(time);
+                        time += 100L;
+                    }
+                    catch (InterruptedException | RateLimitedException e)
+                    {
+                        time += 500L;
+                        retry = true;
+                    }
                 }
-                catch (InterruptedException | RateLimitedException e)
-                {
-                    handleCommandCrash(caller, CommandWordReact.this, args, e);
-                }
+                while (retry);
             });
         }
     }
