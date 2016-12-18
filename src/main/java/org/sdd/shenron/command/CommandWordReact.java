@@ -70,7 +70,7 @@ public class CommandWordReact extends ShenronCommand
         for (TextEmoji reaction : reactions)
         {
             pool.submit(() -> {
-                long time = 500L;
+                long time = 35L;
                 int rateLimit = 0;
                 boolean retry;
 
@@ -86,7 +86,7 @@ public class CommandWordReact extends ShenronCommand
                     catch (InterruptedException | RateLimitedException e)
                     {
                         rateLimit++;
-                        time += 500L * rateLimit;
+                        time += 35L * rateLimit;
                         retry = true;
                     }
                 }
