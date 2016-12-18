@@ -80,6 +80,8 @@ public class CommandWordReact extends ShenronCommand
                     {
                         ((DiscordMessage) lasts[0]).getMessage().addReaction(reaction.getUnicode()).block();
                         Thread.sleep(time);
+
+                        retry = false;
                     }
                     catch (InterruptedException | RateLimitedException e)
                     {
