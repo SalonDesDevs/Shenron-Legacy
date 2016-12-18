@@ -138,6 +138,11 @@ public class Shenron extends Bot
         return commandHandler;
     }
 
+    public InlayerCommandHandler getInlayerCommandHandler()
+    {
+        return inlayerCommandHandler;
+    }
+
     @NotNull
     public static Shenron get()
     {
