@@ -71,6 +71,7 @@ public class CommandWordReact extends ShenronCommand
         {
             pool.submit(() -> {
                 long time = 500L;
+                int rateLimit = 0;
                 boolean retry = false;
 
                 do
@@ -79,11 +80,11 @@ public class CommandWordReact extends ShenronCommand
                     {
                         ((DiscordMessage) lasts[0]).getMessage().addReaction(reaction.getUnicode()).block();
                         Thread.sleep(time);
-                        time += 100L;
                     }
                     catch (InterruptedException | RateLimitedException e)
                     {
-                        time += 500L;
+                        rateLimit++;
+                        time += 500L * rateLimit;
                         retry = true;
                     }
                 }
