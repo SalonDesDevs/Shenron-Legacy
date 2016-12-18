@@ -49,7 +49,7 @@ public class CommandEscape extends ShenronCommand
                            ((MessageCommandCaller) caller).getConversation(),
                            ((MessageCommandCaller) caller).getMessage(),
 
-                           Markdown.mdEscape(Strings.join(args, " ")));
+                           Markdown.mdEscape(Strings.join(args, " ")), false);
 
         System.out.println(Markdown.mdEscape(Strings.join(args, " ")));
     }
