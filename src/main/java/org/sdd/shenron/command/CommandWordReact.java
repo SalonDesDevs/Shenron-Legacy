@@ -72,14 +72,16 @@ public class CommandWordReact extends ShenronCommand
             pool.submit(() -> {
                 long time = 500L;
                 int rateLimit = 0;
-                boolean retry = false;
+                boolean retry;
 
                 do
                 {
+                    String unicode = reaction.getUnicode();
+
                     try
                     {
-                        ((DiscordMessage) lasts[0]).getMessage().addReaction(reaction.getUnicode()).block();
                         Thread.sleep(time);
+                        ((DiscordMessage) lasts[0]).getMessage().addReaction(reaction.getUnicode()).block();
 
                         retry = false;
                     }
