@@ -51,6 +51,12 @@ public class InlayerCommandEscape extends InlayerCommand
         String end = message.substring(pos.index());
         String result = Markdown.mdEscape(Strings.join(args, " "));
 
+        // TODO: FIX THAT OMG SO UGLY LIKE MINUSKUBE
+        if (end.startsWith("}"))
+        {
+            end = end.substring(1);
+        }
+
         return start + result + end;
     }
 }
