@@ -76,8 +76,6 @@ public class CommandWordReact extends ShenronCommand
 
                 do
                 {
-                    String unicode = reaction.getUnicode();
-
                     try
                     {
                         Thread.sleep(time);
