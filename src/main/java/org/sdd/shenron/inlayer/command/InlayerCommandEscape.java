@@ -15,33 +15,33 @@ public class InlayerCommandEscape extends InlayerCommand
     @Override
     public String getCommand()
     {
-        return null;
+        return "escape";
     }
 
     @NotNull
     @Override
     public String getDescription()
     {
-        return null;
+        return "Escape the given text from Markdown";
     }
 
     @NotNull
     @Override
     public String getSyntax()
     {
-        return null;
+        return "[message...]";
     }
 
     @Override
     public boolean checkSyntax(List<String> list)
     {
-        return false;
+        return list.size() > 0;
     }
 
     @Override
     public char getShortcut()
     {
-        return 0;
+        return 'e';
     }
 
     @Override
