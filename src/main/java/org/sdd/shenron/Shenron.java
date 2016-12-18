@@ -13,6 +13,7 @@ import java.util.concurrent.Future;
 import org.jetbrains.annotations.NotNull;
 import org.sdd.shenron.command.*;
 import org.sdd.shenron.inlayer.InlayerCommandHandler;
+import org.sdd.shenron.inlayer.command.InlayerCommandEscape;
 import org.sdd.shenron.inlayer.command.InlayerCommandMarkdown;
 import org.sdd.shenron.inlayer.command.InlayerCommandOsef;
 import org.sdd.shenron.inlayer.command.InlayerCommandQuote;
@@ -56,10 +57,12 @@ public class Shenron extends Bot
                                 new CommandFail(),
                                 new CommandTextToEmoji(),
                                 new CommandOsef(),
-                                new CommandTriggered());
+                                new CommandTriggered(),
+                                new CommandEscape());
 
         inlayerCommandHandler.register(new InlayerCommandQuote(),
                                        new InlayerCommandOsef(),
+                                       new InlayerCommandEscape(),
                                        new InlayerCommandMarkdown("bold", 'b', Markdown.BOLD, "bold"),
                                        new InlayerCommandMarkdown("italic", 'i', Markdown.EMPHASIS, "italic"),
                                        new InlayerCommandMarkdown("underline", 'u', Markdown.UNDERLINE, "underline"),
