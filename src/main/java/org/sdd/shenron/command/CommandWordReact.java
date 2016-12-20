@@ -1,22 +1,20 @@
 package org.sdd.shenron.command;
 
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import fr.litarvan.krobot.command.ICommandCaller;
 import fr.litarvan.krobot.command.message.MessageCommandCaller;
 import fr.litarvan.krobot.motor.Message;
 import fr.litarvan.krobot.motor.discord.DiscordConversation;
 import fr.litarvan.krobot.motor.discord.DiscordMessage;
-import fr.litarvan.krobot.util.KrobotFunctions;
 import fr.litarvan.krobot.util.TextEmoji;
+import net.dv8tion.jda.core.exceptions.RateLimitedException;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
-import net.dv8tion.jda.core.exceptions.RateLimitedException;
-import org.jetbrains.annotations.NotNull;
-import org.sdd.shenron.Shenron;
-
-
-import static fr.litarvan.krobot.util.KrobotFunctions.*;
 
 public class CommandWordReact extends ShenronCommand
 {
@@ -52,7 +50,8 @@ public class CommandWordReact extends ShenronCommand
     @Override
     public void handle(ICommandCaller cCaller, List<String> args) throws RateLimitedException
     {
-        if (!(cCaller instanceof MessageCommandCaller) || !(((MessageCommandCaller) cCaller).getMessage() instanceof DiscordMessage))
+        if (!(cCaller instanceof MessageCommandCaller) ||
+                !(((MessageCommandCaller) cCaller).getMessage() instanceof DiscordMessage))
         {
             return;
         }
@@ -70,23 +69,27 @@ public class CommandWordReact extends ShenronCommand
         for (TextEmoji reaction : reactions)
         {
             pool.submit(() -> {
-                long time = 35L;
-                int rateLimit = 0;
-                boolean retry;
+                final int time = 35;
+                boolean retry = true;
 
                 do
                 {
                     try
                     {
-                        Thread.sleep(time);
-                        ((DiscordMessage) lasts[0]).getMessage().addReaction(reaction.getUnicode()).block();
+                        net.dv8tion.jda.core.entities.Message msg = ((DiscordMessage) lasts[0]).getMessage();
 
-                        retry = false;
+                        Thread.sleep(time);
+
+                        HttpResponse<String> resp = Unirest.put("https://discordapp.com/api/channels/"
+                                + msg.getChannel().getId() + "/messages/"
+                                + msg.getId() + "/reactions/" + reaction.getUnicode() + "/@me")
+                                .header("Authorization", msg.getJDA().getToken()).asString();
+
+                        if(resp.getStatus() < 400)
+                            retry = false;
                     }
-                    catch (InterruptedException | RateLimitedException e)
+                    catch (UnirestException | InterruptedException e)
                     {
-                        rateLimit++;
-                        time += 35L * rateLimit;
                         retry = true;
                     }
                 }
