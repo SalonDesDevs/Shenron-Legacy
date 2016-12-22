@@ -31,7 +31,7 @@ public class CommandWordReact extends ShenronCommand
     @Override
     public String getDescription()
     {
-        return "Add a word as reactions letters emotes on the last message";
+        return "Adds a word as reactions letters emotes on the last message";
     }
 
     @NotNull
