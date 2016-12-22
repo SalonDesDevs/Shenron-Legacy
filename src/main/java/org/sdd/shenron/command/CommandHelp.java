@@ -4,10 +4,11 @@ import fr.litarvan.krobot.command.Command;
 import fr.litarvan.krobot.command.ICommandCaller;
 import fr.litarvan.krobot.command.message.MessageCommandCaller;
 import fr.litarvan.krobot.util.Markdown;
-import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.sdd.shenron.Shenron;
 import org.sdd.shenron.inlayer.InlayerCommand;
+
+import java.util.List;
 
 public class CommandHelp extends ShenronCommand
 {
@@ -22,7 +23,7 @@ public class CommandHelp extends ShenronCommand
     @Override
     public String getDescription()
     {
-        return "Prints the list of command with their description and their syntax";
+        return "Prints the list of commands with their description and their syntax";
     }
 
     @NotNull
