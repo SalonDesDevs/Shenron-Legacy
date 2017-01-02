@@ -34,7 +34,7 @@ public class Shenron extends Bot
     private File folder = new File(krobot().getFolder(), "shenron");
     private File permissionsFile = new File(folder, "permissions.json");
 
-    private MessageCommandHandler commandHandler = new MessageCommandHandler(PREFIX);
+    private ShenronCommandHandler commandHandler = new ShenronCommandHandler(PREFIX);
     private PermissionManager permissionManager = new PermissionManager();
     private SummonListener summon = new SummonListener(INVOKER);
     private InlayerCommandHandler inlayerCommandHandler = new InlayerCommandHandler(AUTO_DETECT_START, INLAYER_PREFIX);
@@ -133,7 +133,7 @@ public class Shenron extends Bot
         return new IMotorExtension[0];
     }
 
-    public MessageCommandHandler getCommandHandler()
+    public ShenronCommandHandler getCommandHandler()
     {
         return commandHandler;
     }
