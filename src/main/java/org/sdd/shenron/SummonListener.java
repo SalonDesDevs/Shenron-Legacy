@@ -28,7 +28,7 @@ public class SummonListener implements IMessageListener
                 Shenron.get().sendMessage("https://giphy.com/gifs/dragon-ball-z-GCBuPi2YPNcxG", event.getConversation());
                 Shenron.get().sendMessage(mdBold("UN HUMAIN TEL QUE VOUS N'EST PAS APTE A FAIRE APPARAITRE SHENRON !"), event.getConversation());
             }
-            else if(message.contains("albatard")){
+            else if(distance <= 3 && message.contains("albatard")){
                 Shenron.get().sendMessage("https://www.youtube.com/watch?v=AMIrFNHAGyE", event.getConversation());
             }
         }
