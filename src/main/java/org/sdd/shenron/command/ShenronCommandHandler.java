@@ -12,6 +12,7 @@ import java.util.List;
 
 public class ShenronCommandHandler extends CommandHandler implements IMessageListener
 {
+    // TODO: KROBOT: Make MessageCommandHAndler and more: open
     private String prefix;
 
     public ShenronCommandHandler(String prefix)

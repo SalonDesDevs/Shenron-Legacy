@@ -18,7 +18,7 @@ public class AutoFail implements IMessageListener
     {
         String message = event.getMessage().getText();
 
-        if (!message.startsWith(/*Shenron.AUTO_DETECT_START + */"*") || message.startsWith("**") || message.endsWith("*"))
+        if (!message.startsWith(/*Shenron.AUTO_DETECT_START + */"*") || message.indexOf("*") != message.lastIndexOf("*"))
         {
             return;
         }
