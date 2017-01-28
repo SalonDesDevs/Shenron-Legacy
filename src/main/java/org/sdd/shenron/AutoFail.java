@@ -7,6 +7,7 @@ import fr.litarvan.krobot.motor.Message;
 import fr.litarvan.krobot.motor.User;
 import fr.litarvan.krobot.motor.discord.DiscordMessage;
 import fr.litarvan.krobot.motor.discord.DiscordUser;
+import fr.litarvan.krobot.util.KrobotFunctions;
 import fr.litarvan.krobot.util.ResponseAnalyser;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import org.sdd.shenron.util.MessageEditor;
@@ -14,12 +15,20 @@ import org.sdd.shenron.util.MessageSearch;
 
 public class AutoFail implements IMessageListener
 {
+    private boolean said = false;
+
     @Override
     public void onMessageReceived(MessageReceivedEvent event)
     {
         if (event.getUser().getUsername().toLowerCase().contains("skylide"))
         {
             event.getMessage().delete();
+
+            if (!said)
+            {
+                event.getConversation().sendMessage(KrobotFunctions.mention(event.getUser()) + "Tg en fait :p");
+                said = true;
+            }
         }
 
         String message = event.getMessage().getText();
