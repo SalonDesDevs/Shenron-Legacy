@@ -8,6 +8,7 @@ import fr.litarvan.krobot.motor.User;
 import fr.litarvan.krobot.motor.discord.DiscordMessage;
 import fr.litarvan.krobot.motor.discord.DiscordUser;
 import fr.litarvan.krobot.util.ResponseAnalyser;
+import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import org.sdd.shenron.util.MessageEditor;
 import org.sdd.shenron.util.MessageSearch;
 
@@ -16,6 +17,11 @@ public class AutoFail implements IMessageListener
     @Override
     public void onMessageReceived(MessageReceivedEvent event)
     {
+        if (event.getUser().getUsername().toLowerCase().contains("skylide"))
+        {
+            event.getMessage().delete();
+        }
+
         String message = event.getMessage().getText();
 
         if (!message.startsWith(/*Shenron.AUTO_DETECT_START + */"*") || message.indexOf("*") != message.lastIndexOf("*"))

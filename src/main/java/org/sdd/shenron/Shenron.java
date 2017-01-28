@@ -1,8 +1,6 @@
 package org.sdd.shenron;
 
 import fr.litarvan.krobot.bot.*;
-import fr.litarvan.krobot.command.message.MessageCommandHandler;
-import fr.litarvan.krobot.message.MessageReceivedEvent;
 import fr.litarvan.krobot.motor.IConversation;
 import fr.litarvan.krobot.motor.IMotorExtension;
 import fr.litarvan.krobot.util.Markdown;
