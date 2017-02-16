@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.util.List;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
@@ -179,7 +178,10 @@ public class CommandGroup extends ShenronCommand
 
     private void create(MessageCommandCaller caller, String name, String channelName) throws RateLimitedException
     {
-        shenron.getPermissionManager().hasOrFail(caller.getUser(), "admin", caller.getConversation(), "Seul un administrateur peut créer un groupe");
+        if (!shenron.getPermissionManager().hasOrFail(caller.getUser(), "admin", caller.getConversation(), "Seul un administrateur peut créer un groupe"))
+        {
+            return;
+        }
 
         channelName = channelName == null ? name.trim().toLowerCase() : channelName.trim().toLowerCase();
 
