@@ -9,6 +9,7 @@ import fr.litarvan.krobot.motor.discord.DiscordUser;
 import fr.litarvan.krobot.util.KrobotFunctions;
 import fr.litarvan.krobot.util.Markdown;
 import java.util.List;
+import joptsimple.internal.Strings;
 import net.dv8tion.jda.core.entities.Member;
 import org.jetbrains.annotations.NotNull;
 import org.sdd.shenron.Shenron;
@@ -61,7 +62,9 @@ public class CommandFAQ extends ShenronCommand
             return;
         }
 
-        String name = args.get(0).trim();
+        String message = Strings.join(args, " ");
+
+        String name = message.trim();
 
         if (name.startsWith("@"))
         {

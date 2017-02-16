@@ -4,6 +4,7 @@ import fr.litarvan.krobot.command.message.MessageCommandCaller;
 import fr.litarvan.krobot.motor.User;
 import fr.litarvan.krobot.util.KrobotFunctions;
 import java.util.List;
+import joptsimple.internal.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.sdd.shenron.Shenron;
 
@@ -39,7 +40,8 @@ public class CommandRole extends ShenronCommand
     @Override
     public void handle(MessageCommandCaller caller, List<String> args) throws Exception
     {
-        String name = args.get(0).trim();
+        String message = Strings.join(args, " ");
+        String name = message.trim();
 
         if (name.startsWith("@"))
         {

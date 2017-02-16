@@ -4,6 +4,7 @@ import fr.litarvan.krobot.command.message.MessageCommandCaller;
 import fr.litarvan.krobot.motor.User;
 import fr.litarvan.krobot.util.PermissionManager;
 import java.util.List;
+import joptsimple.internal.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.sdd.shenron.Shenron;
 
@@ -49,7 +50,8 @@ public class CommandAddAdmin extends ShenronCommand
             return;
         }
 
-        String name = args.get(0).trim();
+        String message = Strings.join(args, " ");
+        String name = message.trim();
 
         if (name.startsWith("@"))
         {
