@@ -11,6 +11,7 @@ import fr.litarvan.krobot.util.Markdown;
 import java.util.List;
 import net.dv8tion.jda.core.entities.Member;
 import org.jetbrains.annotations.NotNull;
+import org.sdd.shenron.Shenron;
 
 
 import static fr.litarvan.krobot.util.KrobotFunctions.*;
@@ -54,7 +55,7 @@ public class CommandFAQ extends ShenronCommand
     @Override
     public void handle(MessageCommandCaller caller, List<String> args) throws Exception
     {
-        if (args.size() == 0)
+        if (args.size() == 0 || !Shenron.get().isAdmin(caller.getUser()))
         {
             caller.getConversation().sendMessage("FAQ : " + link);
             return;
