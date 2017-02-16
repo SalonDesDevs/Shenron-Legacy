@@ -44,17 +44,12 @@ public class CommandTextToEmoji extends ShenronCommand
 
 
     @Override
-    public void handle(ICommandCaller caller, List<String> args) throws Exception
+    public void handle(MessageCommandCaller caller, List<String> args) throws Exception
     {
-        if (!(caller instanceof MessageCommandCaller))
-        {
-            return;
-        }
-
         String message = Strings.join(args, " ");
         String result = toEmoji(message);
 
-        MessageEditor.edit(((MessageCommandCaller) caller).getUser(), ((MessageCommandCaller) caller).getConversation(), ((MessageCommandCaller) caller).getMessage(), result, false);
+        MessageEditor.edit(caller.getUser(), caller.getConversation(), caller.getMessage(), result, false);
     }
 
     public static String toEmoji(String text)

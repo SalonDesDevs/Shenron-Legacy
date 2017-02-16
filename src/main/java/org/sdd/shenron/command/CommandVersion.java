@@ -36,11 +36,8 @@ public class CommandVersion extends ShenronCommand
     }
 
     @Override
-    public void handle(ICommandCaller caller, List<String> args)
+    public void handle(MessageCommandCaller caller, List<String> args)
     {
-        if (caller instanceof MessageCommandCaller)
-        {
-            Shenron.get().sendMessage("Shenron v" + Shenron.get().getVersion(), ((MessageCommandCaller) caller).getConversation());
-        }
+        Shenron.get().sendMessage("Shenron v" + Shenron.get().getVersion(), caller.getConversation());
     }
 }

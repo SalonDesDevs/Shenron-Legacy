@@ -3,40 +3,49 @@ package org.sdd.shenron;
 import fr.litarvan.krobot.bot.*;
 import fr.litarvan.krobot.motor.IConversation;
 import fr.litarvan.krobot.motor.IMotorExtension;
+import fr.litarvan.krobot.motor.User;
+import fr.litarvan.krobot.motor.discord.DiscordMotor;
+import fr.litarvan.krobot.motor.discord.DiscordStartEvent;
+import fr.litarvan.krobot.util.Config;
+import fr.litarvan.krobot.util.Configurator;
 import fr.litarvan.krobot.util.Markdown;
 import fr.litarvan.krobot.util.MessageQueue;
 import fr.litarvan.krobot.util.PermissionManager;
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Future;
+import kotlin.Unit;
 import org.jetbrains.annotations.NotNull;
 import org.sdd.shenron.command.*;
-import org.sdd.shenron.inlayer.InlayerCommandHandler;
-import org.sdd.shenron.inlayer.command.InlayerCommandEscape;
-import org.sdd.shenron.inlayer.command.InlayerCommandMarkdown;
-import org.sdd.shenron.inlayer.command.InlayerCommandOsef;
-import org.sdd.shenron.inlayer.command.InlayerCommandQuote;
 
 
 import static fr.litarvan.krobot.util.KrobotFunctions.*;
-import static fr.litarvan.krobot.util.Markdown.*;
 
 public class Shenron extends Bot
 {
-    public static final String VERSION = "1.0.0";
-    public static final String INVOKER = "Shenron apparais";
-    public static final String PREFIX = "/";
-    public static final char AUTO_DETECT_START = ';';
-    public static final char INLAYER_PREFIX = '#';
+    public static final String VERSION = "2.0.0";
+    public static final String INVOKER = "Shenron apparait";
+    public static final String FAQ = "http://support.manercraft.fr/";
     public static final long MESSAGE_INTERVAL = 2000L;
 
+    public static final Map<String, String> CONFIG = new HashMap<String, String>() {{
+        put("admins", "Who are the admins ? (Use mentions, separated each by a comma (,))");
+        put("prefix", "Command prefix ?");
+    }};
+
     private File folder = new File(krobot().getFolder(), "shenron");
+    private File configFile = new File(folder, "config.json");
     private File permissionsFile = new File(folder, "permissions.json");
 
-    private ShenronCommandHandler commandHandler = new ShenronCommandHandler(PREFIX);
+    private String prefix;
+
+    private ShenronCommandHandler commandHandler;
+    private Configurator configurator;
+
+    private Config config = new Config(configFile);
     private PermissionManager permissionManager = new PermissionManager();
     private SummonListener summon = new SummonListener(INVOKER);
-    private InlayerCommandHandler inlayerCommandHandler = new InlayerCommandHandler(AUTO_DETECT_START, INLAYER_PREFIX);
-    private AutoFail autoFail = new AutoFail();
     private MessageQueue queue = new MessageQueue(MESSAGE_INTERVAL);
 
     @Override
@@ -44,36 +53,81 @@ public class Shenron extends Bot
     {
         info("Starting Shenron v" + VERSION);
 
-        if (permissionsFile.exists())
+        if (configFile.exists())
         {
+            setup();
             permissionManager.load(permissionsFile);
         }
+        else
+        {
+            configurator = new Configurator(this, CONFIG);
+            configurator.init();
+
+            configurator.onFinish((config, event) -> {
+                event.getConversation().sendMessage("Please wait...");
+
+                String[] admins = config.values().get("admins").split(",");
+                for (String admin : admins)
+                {
+                    String name = admin.trim();
+
+                    if (name.startsWith("@"))
+                    {
+                        name = name.substring(1);
+                    }
+
+                    User user = event.getConversation().userByName(name);
+
+                    if (user == null)
+                    {
+                        event.getConversation().sendMessage("Unable to find user '" + name + "'");
+                        continue;
+                    }
+
+                    event.getConversation().sendMessage(mention(user) + " is now admin");
+                    permissionManager.addPermission(user, "admin");
+                }
+
+                permissionManager.addPermission(event.getUser(), "owner", "admin");
+                permissionManager.save(permissionsFile);
+
+                this.config.set("prefix", prefix = config.values().get("prefix"));
+                this.config.save();
+
+                setup();
+
+                event.getConversation().sendMessage(Markdown.mdBold("Shenron v" + VERSION + " set up, thanks for using it !"));
+
+                return Unit.INSTANCE;
+            });
+        }
+
+        info("Shenron started");
+    }
+
+    private void setup()
+    {
+        if (prefix == null)
+        {
+            prefix = (String) config.get("prefix");
+        }
+
+        commandHandler = new ShenronCommandHandler(prefix);
 
         commandHandler.register(new CommandHelp(),
                                 new CommandVersion(),
                                 new CommandWordReact(),
-                                new CommandFail(),
                                 new CommandTextToEmoji(),
                                 new CommandOsef(),
+                                new CommandFAQ(FAQ),
+                                new CommandAddAdmin(),
                                 new CommandTriggered(),
-                                new CommandEscape());
+                                new CommandRole());
 
-        inlayerCommandHandler.register(new InlayerCommandQuote(),
-                                       new InlayerCommandOsef(),
-                                       new InlayerCommandEscape(),
-                                       new InlayerCommandMarkdown("bold", 'b', Markdown.BOLD, "bold"),
-                                       new InlayerCommandMarkdown("italic", 'i', Markdown.EMPHASIS, "italic"),
-                                       new InlayerCommandMarkdown("underline", 'u', Markdown.UNDERLINE, "underline"),
-                                       new InlayerCommandMarkdown("strike", 's', Markdown.STRIKE, "strike"));
+
 
         addMessageListener(summon);
         addMessageListener(commandHandler);
-        addMessageListener(inlayerCommandHandler);
-        addMessageListener(autoFail);
-
-        info("Shenron started");
-
-        // TODO: Shenron v1.0.0 -> Delete Chuck and CrashTest, lang, permission check, enable/disable inlayer/auto-fail
     }
 
     @Override
@@ -124,6 +178,16 @@ public class Shenron extends Bot
         return queue.push(message, conversation);
     }
 
+    public boolean isAdmin(User user)
+    {
+        return permissionManager.hasPermission(user, "admin");
+    }
+
+    public PermissionManager getPermissionManager()
+    {
+        return permissionManager;
+    }
+
     @NotNull
     @Override
     public IMotorExtension[] getExtensions()
@@ -134,11 +198,6 @@ public class Shenron extends Bot
     public ShenronCommandHandler getCommandHandler()
     {
         return commandHandler;
-    }
-
-    public InlayerCommandHandler getInlayerCommandHandler()
-    {
-        return inlayerCommandHandler;
     }
 
     @NotNull

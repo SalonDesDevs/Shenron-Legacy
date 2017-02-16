@@ -39,13 +39,8 @@ public class CommandTriggered extends ShenronCommand
     }
 
     @Override
-    public void handle(ICommandCaller iCommandCaller, List<String> list) throws Exception
+    public void handle(MessageCommandCaller iCommandCaller, List<String> list) throws Exception
     {
-        if (!(iCommandCaller instanceof MessageCommandCaller))
-        {
-            return;
-        }
-
-        MessageEditor.edit(((MessageCommandCaller) iCommandCaller).getUser(), ((MessageCommandCaller) iCommandCaller).getConversation(), ((MessageCommandCaller) iCommandCaller).getMessage(), URL, false);
+        MessageEditor.edit(iCommandCaller.getUser(), iCommandCaller.getConversation(), iCommandCaller.getMessage(), URL, false);
     }
 }

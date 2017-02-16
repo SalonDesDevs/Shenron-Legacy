@@ -3,10 +3,11 @@ package org.sdd.shenron.command;
 import fr.litarvan.krobot.command.Command;
 import fr.litarvan.krobot.command.ICommandCaller;
 import fr.litarvan.krobot.command.message.MessageCommandCaller;
+import fr.litarvan.krobot.motor.discord.DiscordMessage;
 import fr.litarvan.krobot.util.Markdown;
+import net.dv8tion.jda.core.entities.Guild;
 import org.jetbrains.annotations.NotNull;
 import org.sdd.shenron.Shenron;
-import org.sdd.shenron.inlayer.InlayerCommand;
 
 import java.util.List;
 
@@ -40,29 +41,27 @@ public class CommandHelp extends ShenronCommand
     }
 
     @Override
-    public void handle(ICommandCaller caller, List<String> args)
+    public void handle(MessageCommandCaller caller, List<String> args)
     {
-        if (!(caller instanceof MessageCommandCaller))
-        {
-            return;
-        }
-
         String message = Markdown.mdUnderline("List of commands :") + "\n\n";
 
         for (Command c : Shenron.get().getCommandHandler().getCommandList())
         {
+            if (c instanceof ShenronCommand && caller.getMessage() instanceof DiscordMessage)
+            {
+                ShenronCommand sc = (ShenronCommand) c;
+                Guild guild = ((DiscordMessage) caller.getMessage()).getMessage().getGuild();
+
+                if (sc.getServer() != null && !sc.getServer().trim().equalsIgnoreCase(guild.getName().trim()))
+                {
+                    continue;
+                }
+            }
+
             message += ("    " + Shenron.get().getCommandHandler().getPrefix() + c.getCommand() + " " + c.getSyntax() + "\n" +
                         "        " + c.getDescription() + "\n");
         }
 
-        message += "\n" + Markdown.mdUnderline("List of inlayer commands :") + "\n\nNote: Do /inlayer to know how to use it\n\n";
-
-        for (InlayerCommand c : Shenron.get().getInlayerCommandHandler().getCommands())
-        {
-            message += ("    " + Shenron.get().getInlayerCommandHandler().getPrefix() + c.getCommand() + "|" + c.getShortcut() + " " + c.getSyntax() + "\n" +
-                        "        " + c.getDescription() + "\n");
-        }
-
-        Shenron.get().sendMessage(message, ((MessageCommandCaller) caller).getConversation());
+        Shenron.get().sendMessage(message, caller.getConversation());
     }
 }

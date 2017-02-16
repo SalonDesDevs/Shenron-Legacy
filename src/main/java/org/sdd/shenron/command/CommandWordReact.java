@@ -48,17 +48,9 @@ public class CommandWordReact extends ShenronCommand
     }
 
     @Override
-    public void handle(ICommandCaller cCaller, List<String> args) throws RateLimitedException
+    public void handle(MessageCommandCaller caller, List<String> args) throws RateLimitedException
     {
-        if (!(cCaller instanceof MessageCommandCaller) ||
-                !(((MessageCommandCaller) cCaller).getMessage() instanceof DiscordMessage))
-        {
-            return;
-        }
-
-        MessageCommandCaller caller = (MessageCommandCaller) cCaller;
-
-        if (!(caller.getConversation() instanceof DiscordConversation))
+        if (!(caller.getMessage() instanceof DiscordMessage))
         {
             return;
         }
