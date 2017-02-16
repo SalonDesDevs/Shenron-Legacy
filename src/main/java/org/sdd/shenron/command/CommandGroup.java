@@ -161,6 +161,22 @@ public class CommandGroup extends ShenronCommand
     {
         group = group.trim();
 
+        boolean exists = false;
+
+        for (Group g : groups)
+        {
+            if (g.getName().trim().equalsIgnoreCase(group.trim()))
+            {
+                exists = true;
+            }
+        }
+
+        if (!exists)
+        {
+            caller.getConversation().sendMessage(mention(caller.getUser()) + " Ce rôle n'est pas un rôle de groupe");
+            return;
+        }
+
         Guild guild = ((DiscordMessage) caller.getMessage()).getMessage().getGuild();
         List<Role> roles = guild.getRolesByName(group, true);
 
@@ -219,6 +235,12 @@ public class CommandGroup extends ShenronCommand
                     break;
                 }
             }
+        }
+
+        if (group == null)
+        {
+            caller.getConversation().sendMessage(mention(caller.getUser()) + " Le channel dans lequel vous êtes n'est pas un channel de groupe");
+            return;
         }
 
         group = group.trim();
