@@ -10,7 +10,9 @@ import fr.litarvan.krobot.util.KrobotFunctions;
 import fr.litarvan.krobot.util.Markdown;
 import java.util.List;
 import joptsimple.internal.Strings;
+import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.Role;
 import org.jetbrains.annotations.NotNull;
 import org.sdd.shenron.Shenron;
 
@@ -81,9 +83,33 @@ public class CommandFAQ extends ShenronCommand
             return;
         }
 
-        User user = new DiscordUser(members.get(0).getUser());
+        Member member = members.get(0);
+        User user = new DiscordUser(member.getUser());
 
         caller.getConversation().sendMessage(mention(user) + " ! " + Markdown.mdBold("La reponse a ton probleme se trouve dans la " + Markdown.mdUnderline("FAQ")) + "\nCherche bien ;)\n\n" + Markdown.mdBold("==> ") + link);
+
+        Guild guild = member.getGuild();
+
+        Role moche = guild.getRolesByName("Moche", true).get(0);
+        Role hyperMoche = guild.getRolesByName("Hyper Moche", true).get(0);
+        Role ultraMoche = guild.getRolesByName("Ultra Moche", true).get(0);
+
+        if (guild.getMembersWithRoles(ultraMoche).contains(member))
+        {
+            caller.getConversation().sendMessage("En plus t'es Ultra Moche, t'es vraiment le pire des moches omg");
+        }
+        else if (guild.getMembersWithRoles(hyperMoche).contains(member))
+        {
+            guild.getController().addRolesToMember(member, ultraMoche);
+        }
+        else if (guild.getMembersWithRoles(moche).contains(member))
+        {
+            guild.getController().addRolesToMember(member, hyperMoche);
+        }
+        else
+        {
+            guild.getController().addRolesToMember(member, moche);
+        }
     }
 
     public String getServer()
