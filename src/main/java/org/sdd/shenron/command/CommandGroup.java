@@ -229,7 +229,7 @@ public class CommandGroup extends ShenronCommand
         {
             for (Group g : groups)
             {
-                if (g.getChannel().trim().equalsIgnoreCase(caller.getConversation().getName().trim()))
+                if (g.getChannel() != null && g.getChannel().trim().equalsIgnoreCase(caller.getConversation().getName().trim()))
                 {
                     group = g.getName();
                     break;
