@@ -120,6 +120,7 @@ public class Shenron extends Bot
                                 new CommandTextToEmoji(),
                                 new CommandOsef(),
                                 new CommandFAQ(FAQ),
+                                new CommandGroup(),
                                 new CommandAddAdmin(),
                                 new CommandTriggered(),
                                 new CommandRole());

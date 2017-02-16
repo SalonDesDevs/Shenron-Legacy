@@ -34,7 +34,7 @@ public class CommandRole extends ShenronCommand
     @Override
     public boolean checkSyntax(List<String> list)
     {
-        return list.size() == 1;
+        return list.size() > 0;
     }
 
     @Override

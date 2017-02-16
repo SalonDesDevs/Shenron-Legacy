@@ -52,7 +52,7 @@ public class CommandFAQ extends ShenronCommand
     @Override
     public boolean checkSyntax(List<String> list)
     {
-        return list.size() < 2;
+        return true;
     }
 
     @Override
@@ -78,7 +78,6 @@ public class CommandFAQ extends ShenronCommand
 
         if (members.size() == 0)
         {
-
             caller.getConversation().sendMessage(mention(caller.getUser()) + " Can't find user '" + name + "'");
             return;
         }
@@ -100,15 +99,15 @@ public class CommandFAQ extends ShenronCommand
         }
         else if (guild.getMembersWithRoles(hyperMoche).contains(member))
         {
-            guild.getController().addRolesToMember(member, ultraMoche);
+            guild.getController().addRolesToMember(member, ultraMoche).queue();
         }
         else if (guild.getMembersWithRoles(moche).contains(member))
         {
-            guild.getController().addRolesToMember(member, hyperMoche);
+            guild.getController().addRolesToMember(member, hyperMoche).queue();
         }
         else
         {
-            guild.getController().addRolesToMember(member, moche);
+            guild.getController().addRolesToMember(member, moche).queue();
         }
     }
 
