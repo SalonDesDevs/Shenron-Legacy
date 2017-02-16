@@ -174,6 +174,16 @@ public class Shenron extends Bot
         return VERSION;
     }
 
+    public File getFolder()
+    {
+        return folder;
+    }
+
+    public Config getConfig()
+    {
+        return config;
+    }
+
     public Future<Void> sendMessage(String message, IConversation conversation)
     {
         return queue.push(message, conversation);

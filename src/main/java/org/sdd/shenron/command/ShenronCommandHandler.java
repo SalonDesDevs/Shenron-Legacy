@@ -26,7 +26,13 @@ public class ShenronCommandHandler extends CommandHandler implements IMessageLis
     public void handleBadSyntax(ICommandCaller cCaller, Command command, List<String> list)
     {
         MessageCommandCaller caller = (MessageCommandCaller) cCaller;
-        String message = KrobotFunctions.mention(caller.getUser()) + " Syntax : " + command.getCommand() + " " + command.getSyntax();
+
+        if (command instanceof ShenronCommand && !((ShenronCommand) command).isRightServer(caller))
+        {
+            return;
+        }
+
+        String message = KrobotFunctions.mention(caller.getUser()) + " Syntax : /" + command.getCommand() + " " + command.getSyntax();
 
         caller.getConversation().sendMessage(message);
     }

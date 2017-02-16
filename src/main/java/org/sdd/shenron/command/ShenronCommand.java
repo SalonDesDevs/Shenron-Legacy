@@ -24,15 +24,9 @@ public abstract class ShenronCommand extends Command
         MessageCommandCaller caller = (MessageCommandCaller) iCommandCaller;
         caller.getMessage().delete();
 
-        if (caller.getMessage() instanceof DiscordMessage)
+        if (!isRightServer(caller))
         {
-            Guild guild = ((DiscordMessage) caller.getMessage()).getMessage().getGuild();
-
-            if (this.getServer() != null && !this.getServer().trim().equalsIgnoreCase(guild.getName().trim()))
-            {
-                caller.getConversation().sendMessage(KrobotFunctions.mention(caller.getUser()) + " Sorry this command isn't supported on this server");
-                return;
-            }
+            return;
         }
 
         try
@@ -50,5 +44,21 @@ public abstract class ShenronCommand extends Command
     public String getServer()
     {
         return null;
+    }
+
+    public boolean isRightServer(MessageCommandCaller caller)
+    {
+        if (caller.getMessage() instanceof DiscordMessage)
+        {
+            Guild guild = ((DiscordMessage) caller.getMessage()).getMessage().getGuild();
+
+            if (this.getServer() != null && !this.getServer().trim().equalsIgnoreCase(guild.getName().trim()))
+            {
+                caller.getConversation().sendMessage(KrobotFunctions.mention(caller.getUser()) + " Sorry this command isn't supported on this server");
+                return false;
+            }
+        }
+
+        return true;
     }
 }
