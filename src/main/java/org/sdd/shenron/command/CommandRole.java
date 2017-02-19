@@ -49,7 +49,13 @@ public class CommandRole extends ShenronCommand
             name = name.substring(1);
         }
 
-        User user = caller.getConversation().userByName(name);
+        User user = Shenron.getUserOfGuild(name, caller);
+
+        if (user == null)
+        {
+            return;
+        }
+
         String role = "a regular user";
         PermissionManager manager = Shenron.get().getPermissionManager();
 

@@ -58,11 +58,10 @@ public class CommandAddAdmin extends ShenronCommand
             name = name.substring(1);
         }
 
-        User user = caller.getConversation().userByName(name);
+        User user = Shenron.getUserOfGuild(name, caller);
 
         if (user == null)
         {
-            caller.getConversation().sendMessage(mention(caller.getUser()) + " Can't find user '" + name + "'");
             return;
         }
 

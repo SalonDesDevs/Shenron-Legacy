@@ -1,11 +1,15 @@
 package org.sdd.shenron;
 
 import fr.litarvan.krobot.bot.*;
+import fr.litarvan.krobot.command.ICommandCaller;
+import fr.litarvan.krobot.command.message.MessageCommandCaller;
 import fr.litarvan.krobot.motor.IConversation;
 import fr.litarvan.krobot.motor.IMotorExtension;
 import fr.litarvan.krobot.motor.User;
+import fr.litarvan.krobot.motor.discord.DiscordMessage;
 import fr.litarvan.krobot.motor.discord.DiscordMotor;
 import fr.litarvan.krobot.motor.discord.DiscordStartEvent;
+import fr.litarvan.krobot.motor.discord.DiscordUser;
 import fr.litarvan.krobot.util.Config;
 import fr.litarvan.krobot.util.Configurator;
 import fr.litarvan.krobot.util.Markdown;
@@ -13,9 +17,11 @@ import fr.litarvan.krobot.util.MessageQueue;
 import fr.litarvan.krobot.util.PermissionManager;
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
 import kotlin.Unit;
+import net.dv8tion.jda.core.entities.Member;
 import org.jetbrains.annotations.NotNull;
 import org.sdd.shenron.command.*;
 
@@ -197,6 +203,25 @@ public class Shenron extends Bot
     public PermissionManager getPermissionManager()
     {
         return permissionManager;
+    }
+
+    public static Member getMemberOfGuild(String name, MessageCommandCaller caller)
+    {
+        List<Member> members = ((DiscordMessage) caller.getMessage()).getMessage().getGuild().getMembersByEffectiveName(name, true);
+
+        if (members.size() == 0)
+        {
+            caller.getConversation().sendMessage(mention(caller.getUser()) + " Can't find user '" + name + "'");
+            return null;
+        }
+
+        return members.get(0);
+    }
+
+    public static User getUserOfGuild(String name, MessageCommandCaller caller)
+    {
+        Member member = getMemberOfGuild(name, caller);
+        return member == null ? null : new DiscordUser(member.getUser());
     }
 
     @NotNull

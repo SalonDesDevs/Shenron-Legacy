@@ -73,16 +73,14 @@ public class CommandFAQ extends ShenronCommand
             name = name.substring(1);
         }
 
-        // TODO: KROBOT: userByName tres lent + effetive name
-        List<Member> members = ((DiscordMessage) caller.getMessage()).getMessage().getGuild().getMembersByEffectiveName(name, true);
+        // TODO: KROBOT: userByName tres lent + effective name
+        Member member = Shenron.getMemberOfGuild(name, caller);
 
-        if (members.size() == 0)
+        if (member == null)
         {
-            caller.getConversation().sendMessage(mention(caller.getUser()) + " Can't find user '" + name + "'");
             return;
         }
 
-        Member member = members.get(0);
         User user = new DiscordUser(member.getUser());
 
         caller.getConversation().sendMessage(mention(user) + " ! " + Markdown.mdBold("La reponse a ton probleme se trouve dans la " + Markdown.mdUnderline("FAQ")) + "\nCherche bien ;)\n\n" + Markdown.mdBold("==> ") + link);
