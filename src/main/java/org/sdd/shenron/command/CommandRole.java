@@ -3,6 +3,7 @@ package org.sdd.shenron.command;
 import fr.litarvan.krobot.command.message.MessageCommandCaller;
 import fr.litarvan.krobot.motor.User;
 import fr.litarvan.krobot.util.KrobotFunctions;
+import fr.litarvan.krobot.util.PermissionManager;
 import java.util.List;
 import joptsimple.internal.Strings;
 import org.jetbrains.annotations.NotNull;
@@ -49,6 +50,26 @@ public class CommandRole extends ShenronCommand
         }
 
         User user = caller.getConversation().userByName(name);
-        caller.getConversation().sendMessage(KrobotFunctions.mention(user) + " is " + (Shenron.get().isAdmin(user) ? "an admin" : "a regular user"));
+        String role = "a regular user";
+        PermissionManager manager = Shenron.get().getPermissionManager();
+
+        if (manager.hasPermission(user, "owner"))
+        {
+            role = "the owner <3";
+        }
+        else if (manager.hasPermission(user, "admin"))
+        {
+            role = "an admin";
+        }
+        else if (manager.hasPermission(user, "admin_sdd"))
+        {
+            role = "an admin of 'SDD'";
+        }
+        else if (manager.hasPermission(user, "admin_support"))
+        {
+            role = "an admin of 'Support Launcher'";
+        }
+
+        caller.getConversation().sendMessage(KrobotFunctions.mention(user) + " is " + role);
     }
 }
