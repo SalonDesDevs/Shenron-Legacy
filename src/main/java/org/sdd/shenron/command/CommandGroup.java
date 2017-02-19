@@ -194,7 +194,7 @@ public class CommandGroup extends ShenronCommand
 
     private void create(MessageCommandCaller caller, String name, String channelName) throws RateLimitedException
     {
-        if (!shenron.getPermissionManager().hasOrFail(caller.getUser(), "admin", caller.getConversation(), "Seul un administrateur peut créer un groupe"))
+        if (!shenron.getPermissionManager().hasOrFail(caller.getUser(), "admin_sdd", caller.getConversation(), "Seul un administrateur peut créer un groupe"))
         {
             return;
         }

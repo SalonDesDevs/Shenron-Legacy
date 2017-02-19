@@ -58,7 +58,7 @@ public class CommandFAQ extends ShenronCommand
     @Override
     public void handle(MessageCommandCaller caller, List<String> args) throws Exception
     {
-        if (args.size() == 0 || !Shenron.get().isAdmin(caller.getUser()))
+        if (args.size() == 0 || !Shenron.get().getPermissionManager().hasPermission(caller.getUser(), "admin_support"))
         {
             caller.getConversation().sendMessage("FAQ : " + link);
             return;

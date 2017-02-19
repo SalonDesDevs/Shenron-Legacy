@@ -37,7 +37,7 @@ public class CommandAddAdmin extends ShenronCommand
     @Override
     public boolean checkSyntax(List<String> list)
     {
-        return list.size() == 1;
+        return list.size() < 3;
     }
 
     @Override
@@ -66,7 +66,15 @@ public class CommandAddAdmin extends ShenronCommand
             return;
         }
 
-        manager.addPermission(user, "admin");
-        caller.getConversation().sendMessage(mention(user) + " is now admin");
+        String perm = "admin";
+        String suffix = args.get(1).trim();
+
+        if (args.size() == 2)
+        {
+            perm += "_" + suffix.toLowerCase();
+        }
+
+        manager.addPermission(user, perm);
+        caller.getConversation().sendMessage(mention(user) + " is now admin (" + suffix.toUpperCase() + ")");
     }
 }
