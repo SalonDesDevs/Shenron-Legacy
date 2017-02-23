@@ -87,13 +87,13 @@ public class CommandFAQ extends ShenronCommand
 
         Guild guild = member.getGuild();
 
-        Role moche = guild.getRolesByName("Moche", true).get(0);
-        Role hyperMoche = guild.getRolesByName("Hyper Moche", true).get(0);
-        Role ultraMoche = guild.getRolesByName("Ultra Moche", true).get(0);
+        Role moche = guild.getRolesByName("Pabo", true).get(0);
+        Role hyperMoche = guild.getRolesByName("Hyper Pabo", true).get(0);
+        Role ultraMoche = guild.getRolesByName("Ultra Pabo", true).get(0);
 
         if (guild.getMembersWithRoles(ultraMoche).contains(member))
         {
-            caller.getConversation().sendMessage("En plus t'es Ultra Moche, t'es vraiment le pire des moches omg");
+            caller.getConversation().sendMessage("En plus t'es Ultra Pabo, t'es vraiment le pire des pabo omg");
         }
         else if (guild.getMembersWithRoles(hyperMoche).contains(member))
         {
