@@ -294,7 +294,7 @@ public class CommandGroup extends ShenronCommand
         {
             String[] split = group.split("\\/");
 
-            String groupName = split[0];
+            String groupName = split[0].replace("#", "/");
             String emoteName = split[1];
 
             List<Emote> emotes = conversation.getChannel().getJDA().getEmotesByName(emoteName, true);

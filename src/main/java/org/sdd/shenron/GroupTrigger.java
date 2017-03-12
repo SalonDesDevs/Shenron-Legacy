@@ -13,6 +13,9 @@ public class GroupTrigger
     {
         this.messageId = messageId;
         this.groups = groups;
+
+        // /group trigger "__Systèmes__ : Windows, Mac OS X, Linux" Windows/windows MacOS/osx Linux/linux
+        // /group trigger "__Langages Web__ : HTML/CSS, Javascript, PHP" : HTML#CSS
     }
 
     public String getMessageId()
