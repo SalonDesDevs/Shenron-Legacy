@@ -53,11 +53,15 @@ public class Shenron extends Bot
     private PermissionManager permissionManager = new PermissionManager();
     private SummonListener summon = new SummonListener(INVOKER);
     private MessageQueue queue = new MessageQueue(MESSAGE_INTERVAL);
+    private GroupListener groupListener;
+    private CommandGroup commandGroup;
 
     @Override
     public void onStart(StartEvent startEvent)
     {
         info("Starting Shenron v" + VERSION);
+
+        groupListener = new GroupListener(this);
 
         if (configFile.exists())
         {
@@ -126,7 +130,7 @@ public class Shenron extends Bot
                                 new CommandTextToEmoji(),
                                 new CommandOsef(),
                                 new CommandFAQ(FAQ),
-                                new CommandGroup(),
+                                commandGroup = new CommandGroup(),
                                 new CommandAddAdmin(),
                                 new CommandTriggered(),
                                 new CommandRole());
@@ -228,12 +232,24 @@ public class Shenron extends Bot
     @Override
     public IMotorExtension[] getExtensions()
     {
-        return new IMotorExtension[0];
+        return new IMotorExtension[] {
+            groupListener
+        };
     }
 
     public ShenronCommandHandler getCommandHandler()
     {
         return commandHandler;
+    }
+
+    public GroupListener getGroupListener()
+    {
+        return groupListener;
+    }
+
+    public CommandGroup getCommandGroup()
+    {
+        return commandGroup;
     }
 
     @NotNull

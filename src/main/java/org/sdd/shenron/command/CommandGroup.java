@@ -3,9 +3,9 @@ package org.sdd.shenron.command;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import fr.litarvan.krobot.command.message.MessageCommandCaller;
+import fr.litarvan.krobot.motor.discord.DiscordConversation;
 import fr.litarvan.krobot.motor.discord.DiscordMessage;
 import fr.litarvan.krobot.motor.discord.DiscordUser;
-import fr.litarvan.krobot.util.KrobotFunctions;
 import fr.litarvan.krobot.util.Markdown;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -14,15 +14,22 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.Emote;
 import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
+import net.dv8tion.jda.core.requests.RestAction;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.sdd.shenron.Group;
+import org.sdd.shenron.GroupTrigger;
 import org.sdd.shenron.Shenron;
 
 
@@ -86,7 +93,7 @@ public class CommandGroup extends ShenronCommand
     @Override
     public String getSyntax()
     {
-        return "list | join <group> | create <group> [channel-name] | leave [group]";
+        return "list | join <group> | create <group> [channel-name] | leave [group] | trigger <message> <emote/group...>";
     }
 
     @Override
@@ -117,6 +124,10 @@ public class CommandGroup extends ShenronCommand
         {
             return size == 1 || size == 2;
         }
+        else if (command.equals("trigger"))
+        {
+            return size > 2;
+        }
         else
         {
             return false;
@@ -141,6 +152,10 @@ public class CommandGroup extends ShenronCommand
                 break;
             case "leave":
                 leave(caller, args.size() == 2 ? args.get(1) : null);
+                break;
+            case "trigger":
+                List<String> groups = args.subList(2, args.size());
+                trigger(caller, args.get(1), groups.toArray(new String[groups.size()]));
                 break;
         }
     }
@@ -260,6 +275,75 @@ public class CommandGroup extends ShenronCommand
         caller.getConversation().sendMessage(mention(caller.getUser()) + " a été supprimé du groupe '" + group + "'");
     }
 
+    private void trigger(MessageCommandCaller caller, String message, String[] groups) throws RateLimitedException
+    {
+        DiscordConversation conversation = (DiscordConversation) caller.getConversation();
+        Message msg = conversation.getChannel().sendMessage(message).block();
+
+        try
+        {
+            Thread.sleep(1000L);
+        }
+        catch (InterruptedException ignored)
+        {
+        }
+
+        List<ImmutablePair<String, String>> entries = new ArrayList<>();
+
+        for (String group : groups)
+        {
+            String[] split = group.split("\\/");
+
+            String groupName = split[0];
+            String emoteName = split[1];
+
+            List<Emote> emotes = conversation.getChannel().getJDA().getEmotesByName(emoteName, true);
+
+            if (emotes.size() == 0)
+            {
+                conversation.sendMessage(mention(caller.getUser()) + " Impossible de trouver l'emote '" + emoteName + "'");
+                msg.deleteMessage().block();
+
+                return;
+            }
+
+            Group gr = null;
+
+            for (Group g : this.groups)
+            {
+                if (g.getName().trim().equalsIgnoreCase(groupName.trim()))
+                {
+                    gr = g;
+                    break;
+                }
+            }
+
+            if (gr == null)
+            {
+                conversation.sendMessage(mention(caller.getUser()) + " Impossible de trouver le groupe '" + groupName + "'");
+                msg.deleteMessage().block();
+
+                return;
+            }
+
+            Emote emote = emotes.get(0);
+
+            msg.addReaction(emote).block();
+            entries.add(new ImmutablePair<>(emote.getId(), gr.getName()));
+
+            try
+            {
+                Thread.sleep(2500L);
+            }
+            catch (InterruptedException e)
+            {
+                e.printStackTrace();
+            }
+        }
+
+        shenron.getGroupListener().addTrigger(new GroupTrigger(msg.getId(), entries));
+    }
+
     public void setGroups(Group[] groups)
     {
         this.groups = groups;
@@ -288,6 +372,11 @@ public class CommandGroup extends ShenronCommand
             {
             }
         }
+    }
+
+    public Group[] getGroups()
+    {
+        return groups;
     }
 
     @Override
