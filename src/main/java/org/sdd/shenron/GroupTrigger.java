@@ -19,7 +19,7 @@ public class GroupTrigger
         // /group trigger "__Langages Natifs__ : C, C++, Rust, Go, Bas-Level" C-lang/c_lang C++/cpp Rust/rust Go/go Bas-Level/baslvl
         // /group trigger "__Langages Haut-Niveau__ : Java, Lua, Ruby, Python" Java/java Lua/lua Ruby/ruby Python/python
         // /group trigger "__Langages fonctionnels__ : Haskell, Elixir" Haskell/haskell Elixir/elixir
-        // /group trigger "__Autres groupes__ : Cryptomonnaie, Pervers" Cryptomonnaie/cmonnaie Pervers/pig
+        // /group trigger "__Autres groupes__ : Cryptomonnaie, Pervers" Cryptomonnaie/cmonnaie Pervers/kreygasm
     }
 
     public String getMessageId()

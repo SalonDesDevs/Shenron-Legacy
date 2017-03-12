@@ -15,10 +15,8 @@ import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageReaction;
 import net.dv8tion.jda.core.entities.Role;
-import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.core.events.message.react.MessageReactionRemoveEvent;
-import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -141,7 +139,6 @@ public class GroupListener extends DiscordExtension
 
         if (group == null)
         {
-            message.deleteMessage().queue();
             return null;
         }
 
@@ -149,7 +146,6 @@ public class GroupListener extends DiscordExtension
 
         if (roles.size() == 0)
         {
-            message.deleteMessage().queue();
             return null;
         }
 
