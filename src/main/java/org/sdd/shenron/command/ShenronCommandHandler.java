@@ -7,6 +7,7 @@ import fr.litarvan.krobot.command.message.MessageCommandCaller;
 import fr.litarvan.krobot.exception.CommandException;
 import fr.litarvan.krobot.message.IMessageListener;
 import fr.litarvan.krobot.message.MessageReceivedEvent;
+import fr.litarvan.krobot.motor.discord.DiscordConversation;
 import fr.litarvan.krobot.util.KrobotFunctions;
 import java.util.List;
 
@@ -34,7 +35,8 @@ public class ShenronCommandHandler extends CommandHandler implements IMessageLis
 
         String message = KrobotFunctions.mention(caller.getUser()) + " Syntax : /" + command.getCommand() + " " + command.getSyntax();
 
-        caller.getConversation().sendMessage(message);
+        DiscordConversation conversation = (DiscordConversation) caller.getConversation();
+        conversation.getChannel().sendMessage(message).queue();
     }
 
     @Override

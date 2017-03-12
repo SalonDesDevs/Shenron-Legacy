@@ -2,6 +2,7 @@ package org.sdd.shenron.command;
 
 import fr.litarvan.krobot.command.message.MessageCommandCaller;
 import fr.litarvan.krobot.motor.User;
+import fr.litarvan.krobot.motor.discord.DiscordConversation;
 import fr.litarvan.krobot.util.PermissionManager;
 import java.util.List;
 import joptsimple.internal.Strings;
@@ -44,6 +45,7 @@ public class CommandAddAdmin extends ShenronCommand
     public void handle(MessageCommandCaller caller, List<String> args) throws Exception
     {
         PermissionManager manager = Shenron.get().getPermissionManager();
+        DiscordConversation conversation = (DiscordConversation) caller.getConversation();
 
         if (!manager.hasOrFail(caller.getUser(), "owner", caller.getConversation(), "Seul l'owner du bot peut executer cette commande"))
         {
@@ -74,6 +76,6 @@ public class CommandAddAdmin extends ShenronCommand
         }
 
         manager.addPermission(user, perm);
-        caller.getConversation().sendMessage(mention(user) + " is now admin (" + suffix.toUpperCase() + ")");
+        conversation.getChannel().sendMessage(mention(user) + " is now admin (" + suffix.toUpperCase() + ")").queue();
     }
 }

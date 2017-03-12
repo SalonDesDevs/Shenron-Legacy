@@ -3,6 +3,7 @@ package org.sdd.shenron.command;
 import fr.litarvan.krobot.command.Command;
 import fr.litarvan.krobot.command.ICommandCaller;
 import fr.litarvan.krobot.command.message.MessageCommandCaller;
+import fr.litarvan.krobot.motor.discord.DiscordConversation;
 import fr.litarvan.krobot.motor.discord.DiscordMessage;
 import fr.litarvan.krobot.util.Markdown;
 import net.dv8tion.jda.core.entities.Guild;
@@ -43,6 +44,7 @@ public class CommandHelp extends ShenronCommand
     @Override
     public void handle(MessageCommandCaller caller, List<String> args)
     {
+        DiscordConversation conversation = (DiscordConversation) caller.getConversation();
         String message = Markdown.mdUnderline("List of commands :") + "\n\n";
 
         for (Command c : Shenron.get().getCommandHandler().getCommandList())
@@ -62,6 +64,6 @@ public class CommandHelp extends ShenronCommand
                         "        " + c.getDescription() + "\n");
         }
 
-        Shenron.get().sendMessage(message, caller.getConversation());
+        conversation.getChannel().sendMessage(message).queue();
     }
 }

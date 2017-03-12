@@ -58,9 +58,11 @@ public class CommandFAQ extends ShenronCommand
     @Override
     public void handle(MessageCommandCaller caller, List<String> args) throws Exception
     {
+        DiscordConversation conversation = (DiscordConversation) caller.getConversation();
+
         if (args.size() == 0 || !Shenron.get().getPermissionManager().hasPermission(caller.getUser(), "admin_support"))
         {
-            caller.getConversation().sendMessage("FAQ : " + link);
+            conversation.getChannel().sendMessage("FAQ : " + link).queue();
             return;
         }
 
@@ -83,7 +85,7 @@ public class CommandFAQ extends ShenronCommand
 
         User user = new DiscordUser(member.getUser());
 
-        caller.getConversation().sendMessage(mention(user) + " ! " + Markdown.mdBold("La reponse a ton probleme se trouve dans la " + Markdown.mdUnderline("FAQ")) + "\nCherche bien ;)\n\n" + Markdown.mdBold("==> ") + link);
+        conversation.getChannel().sendMessage(mention(user) + " ! " + Markdown.mdBold("La reponse a ton probleme se trouve dans la " + Markdown.mdUnderline("FAQ")) + "\nCherche bien ;)\n\n" + Markdown.mdBold("==> ") + link).queue();
 
         Guild guild = member.getGuild();
 
@@ -93,7 +95,7 @@ public class CommandFAQ extends ShenronCommand
 
         if (guild.getMembersWithRoles(ultraMoche).contains(member))
         {
-            caller.getConversation().sendMessage("En plus t'es Ultra Pabo, t'es vraiment le pire des pabo omg");
+            conversation.getChannel().sendMessage("En plus t'es Ultra Pabo, t'es vraiment le pire des pabo omg").queue();
         }
         else if (guild.getMembersWithRoles(hyperMoche).contains(member))
         {

@@ -162,6 +162,8 @@ public class CommandGroup extends ShenronCommand
 
     private void list(MessageCommandCaller caller)
     {
+        DiscordConversation conversation = (DiscordConversation) caller.getConversation();
+
         String message = Markdown.mdUnderline("Liste des groupes :") + "\n\n";
 
         for (Group group : groups)
@@ -169,11 +171,13 @@ public class CommandGroup extends ShenronCommand
             message += "    - " + group.getName() + (group.getChannel() != null ? " ( #" + group.getChannel() + " )" : "") + "\n";
         }
 
-        caller.getConversation().sendMessage(message);
+        conversation.getChannel().sendMessage(message).queue();
     }
 
     private void join(MessageCommandCaller caller, String group) throws RateLimitedException
     {
+        DiscordConversation conversation = (DiscordConversation) caller.getConversation();
+
         group = group.trim();
 
         boolean exists = false;
@@ -188,7 +192,7 @@ public class CommandGroup extends ShenronCommand
 
         if (!exists)
         {
-            caller.getConversation().sendMessage(mention(caller.getUser()) + " Ce rôle n'est pas un rôle de groupe");
+            conversation.getChannel().sendMessage(mention(caller.getUser()) + " Ce rôle n'est pas un rôle de groupe").queue();
             return;
         }
 
@@ -197,18 +201,20 @@ public class CommandGroup extends ShenronCommand
 
         if (roles.size() == 0)
         {
-            caller.getConversation().sendMessage(mention(caller.getUser()) + " Groupe inconnu '" + group);
+            conversation.getChannel().sendMessage(mention(caller.getUser()) + " Groupe inconnu '" + group).queue();
             return;
         }
 
         Role role = roles.get(0);
-        guild.getController().addRolesToMember(guild.getMember(((DiscordUser) caller.getUser()).getUser()), role).block();
+        guild.getController().addRolesToMember(guild.getMember(((DiscordUser) caller.getUser()).getUser()), role).queue();
 
-        caller.getConversation().sendMessage(mention(caller.getUser()) + " a été ajouté au groupe '" + group + "'");
+        conversation.getChannel().sendMessage(mention(caller.getUser()) + " a été ajouté au groupe '" + group + "'").queue();
     }
 
     private void create(MessageCommandCaller caller, String name, String channelName) throws RateLimitedException
     {
+        DiscordConversation conversation = (DiscordConversation) caller.getConversation();
+
         if (!shenron.getPermissionManager().hasOrFail(caller.getUser(), "admin_sdd", caller.getConversation(), "Seul un administrateur peut créer un groupe"))
         {
             return;
@@ -218,28 +224,39 @@ public class CommandGroup extends ShenronCommand
 
         if (ArrayUtils.contains(groups, name.trim()))
         {
-            caller.getConversation().sendMessage(mention(caller.getUser()) + " Un groupe du même nom existe déjà");
+            conversation.getChannel().sendMessage(mention(caller.getUser()) + " Un groupe du même nom existe déjà").queue();
             return;
         }
 
         Guild guild = ((DiscordMessage) caller.getMessage()).getMessage().getGuild();
-        Role role = guild.getController().createRole().block();
-        Role member = guild.getRolesByName("Membre", true).get(0);
-        TextChannel channel = guild.getController().createTextChannel(channelName).block();
+        String finalChannelName = channelName;
 
-        role.getManager().setName(name).block();
-        role.getManager().setMentionable(true).block();
+        guild.getController().createRole().queue((role) -> {
+            Role member = guild.getRolesByName("Membre", true).get(0);
 
-        channel.createPermissionOverride(member).block().getManager().deny(Permission.MESSAGE_READ).block();
-        channel.createPermissionOverride(role).block().getManager().grant(Permission.MESSAGE_READ).block();
+            guild.getController().createTextChannel(finalChannelName).queue((channel) -> {
+                channel.createPermissionOverride(member).queue((override) -> {
+                    override.getManager().deny(Permission.MESSAGE_READ).queue();
+                });
 
-        setGroups(ArrayUtils.add(groups, new Group(name, channelName)));
+                channel.createPermissionOverride(role).queue((override) -> {
+                    override.getManager().grant(Permission.MESSAGE_READ).queue();
+                });
+            });
 
-        caller.getConversation().sendMessage(mention(caller.getUser()) + " Groupe '" + name + "' créé (channel #" + channelName + " )");
+            role.getManager().setName(name).queue();
+            role.getManager().setMentionable(true).queue();
+
+            setGroups(ArrayUtils.add(groups, new Group(name, finalChannelName)));
+
+            conversation.getChannel().sendMessage(mention(caller.getUser()) + " Groupe '" + name + "' créé (channel #" + finalChannelName + " )").queue();
+        });
     }
 
     private void leave(MessageCommandCaller caller, String group) throws RateLimitedException
     {
+        DiscordConversation conversation = (DiscordConversation) caller.getConversation();
+
         if (group == null)
         {
             for (Group g : groups)
@@ -254,7 +271,7 @@ public class CommandGroup extends ShenronCommand
 
         if (group == null)
         {
-            caller.getConversation().sendMessage(mention(caller.getUser()) + " Le channel dans lequel vous êtes n'est pas un channel de groupe");
+            conversation.getChannel().sendMessage(mention(caller.getUser()) + " Le channel dans lequel vous êtes n'est pas un channel de groupe").queue();
             return;
         }
 
@@ -265,83 +282,69 @@ public class CommandGroup extends ShenronCommand
 
         if (roles.size() == 0)
         {
-            caller.getConversation().sendMessage(mention(caller.getUser()) + " Groupe inconnu '" + group);
+            conversation.getChannel().sendMessage(mention(caller.getUser()) + " Groupe inconnu '" + group).queue();
             return;
         }
 
         Role role = roles.get(0);
-        guild.getController().removeRolesFromMember(guild.getMember(((DiscordUser) caller.getUser()).getUser()), role).block();
+        String finalGroup = group;
 
-        caller.getConversation().sendMessage(mention(caller.getUser()) + " a été supprimé du groupe '" + group + "'");
+        guild.getController().removeRolesFromMember(guild.getMember(((DiscordUser) caller.getUser()).getUser()), role).queue((z) -> {
+            conversation.getChannel().sendMessage(mention(caller.getUser()) + " a été supprimé du groupe '" + finalGroup + "'").queue();
+        });
     }
 
     private void trigger(MessageCommandCaller caller, String message, String[] groups) throws RateLimitedException
     {
         DiscordConversation conversation = (DiscordConversation) caller.getConversation();
-        Message msg = conversation.getChannel().sendMessage(message).block();
 
-        try
-        {
-            Thread.sleep(1000L);
-        }
-        catch (InterruptedException ignored)
-        {
-        }
+        conversation.getChannel().sendMessage(message).queue((msg) -> {
+            List<ImmutablePair<String, String>> entries = new ArrayList<>();
 
-        List<ImmutablePair<String, String>> entries = new ArrayList<>();
-
-        for (String group : groups)
-        {
-            String[] split = group.split("\\/");
-
-            String groupName = split[0].replace("#", "/");
-            String emoteName = split[1];
-
-            List<Emote> emotes = conversation.getChannel().getJDA().getEmotesByName(emoteName, true);
-
-            if (emotes.size() == 0)
+            for (String group : groups)
             {
-                conversation.sendMessage(mention(caller.getUser()) + " Impossible de trouver l'emote '" + emoteName + "'");
-                msg.deleteMessage().block();
+                String[] split = group.split("\\/");
 
-                return;
-            }
+                String groupName = split[0].replace("#", "/");
+                String emoteName = split[1];
 
-            Group gr = null;
+                List<Emote> emotes = conversation.getChannel().getJDA().getEmotesByName(emoteName, true);
 
-            for (Group g : this.groups)
-            {
-                if (g.getName().trim().equalsIgnoreCase(groupName.trim()))
+                if (emotes.size() == 0)
                 {
-                    gr = g;
-                    break;
+                    conversation.getChannel().sendMessage(mention(caller.getUser()) + " Impossible de trouver l'emote '" + emoteName + "'").queue();
+                    msg.deleteMessage().queue();
+
+                    return;
                 }
+
+                Group gr = null;
+
+                for (Group g : this.groups)
+                {
+                    if (g.getName().trim().equalsIgnoreCase(groupName.trim()))
+                    {
+                        gr = g;
+                        break;
+                    }
+                }
+
+                if (gr == null)
+                {
+                    conversation.getChannel().sendMessage(mention(caller.getUser()) + " Impossible de trouver le groupe '" + groupName + "'").queue();
+                    msg.deleteMessage().queue();
+
+                    return;
+                }
+
+                Emote emote = emotes.get(0);
+
+                msg.addReaction(emote).queue();
+                entries.add(new ImmutablePair<>(emote.getId(), gr.getName()));
             }
 
-            if (gr == null)
-            {
-                conversation.sendMessage(mention(caller.getUser()) + " Impossible de trouver le groupe '" + groupName + "'");
-                msg.deleteMessage().block();
-
-                return;
-            }
-
-            Emote emote = emotes.get(0);
-
-            msg.addReaction(emote).block();
-            entries.add(new ImmutablePair<>(emote.getId(), gr.getName()));
-
-            try
-            {
-                Thread.sleep(2500L);
-            }
-            catch (InterruptedException e)
-            {
-                e.printStackTrace();
-            }
-        }
-
-        shenron.getGroupListener().addTrigger(new GroupTrigger(msg.getId(), entries));
+            shenron.getGroupListener().addTrigger(new GroupTrigger(msg.getId(), entries));
+        });
     }
 
     public void setGroups(Group[] groups)

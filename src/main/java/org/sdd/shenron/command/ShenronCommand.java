@@ -3,6 +3,7 @@ package org.sdd.shenron.command;
 import fr.litarvan.krobot.command.Command;
 import fr.litarvan.krobot.command.ICommandCaller;
 import fr.litarvan.krobot.command.message.MessageCommandCaller;
+import fr.litarvan.krobot.motor.discord.DiscordConversation;
 import fr.litarvan.krobot.motor.discord.DiscordMessage;
 import fr.litarvan.krobot.util.KrobotFunctions;
 import java.util.List;
@@ -50,11 +51,12 @@ public abstract class ShenronCommand extends Command
     {
         if (caller.getMessage() instanceof DiscordMessage)
         {
+            DiscordConversation conversation = (DiscordConversation) caller.getConversation();
             Guild guild = ((DiscordMessage) caller.getMessage()).getMessage().getGuild();
 
             if (this.getServer() != null && !this.getServer().trim().equalsIgnoreCase(guild.getName().trim()))
             {
-                caller.getConversation().sendMessage(KrobotFunctions.mention(caller.getUser()) + " Sorry this command isn't supported on this server");
+                conversation.getChannel().sendMessage(KrobotFunctions.mention(caller.getUser()) + " Sorry this command isn't supported on this server").queue();
                 return false;
             }
         }

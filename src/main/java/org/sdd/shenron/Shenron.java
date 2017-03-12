@@ -52,7 +52,6 @@ public class Shenron extends Bot
     private Config config = new Config(configFile);
     private PermissionManager permissionManager = new PermissionManager();
     private SummonListener summon = new SummonListener(INVOKER);
-    private MessageQueue queue = new MessageQueue(MESSAGE_INTERVAL);
     private GroupListener groupListener;
     private CommandGroup commandGroup;
 
@@ -192,11 +191,6 @@ public class Shenron extends Bot
     public Config getConfig()
     {
         return config;
-    }
-
-    public Future<Void> sendMessage(String message, IConversation conversation)
-    {
-        return queue.push(message, conversation);
     }
 
     public boolean isAdmin(User user)

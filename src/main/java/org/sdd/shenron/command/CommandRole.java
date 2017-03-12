@@ -2,6 +2,7 @@ package org.sdd.shenron.command;
 
 import fr.litarvan.krobot.command.message.MessageCommandCaller;
 import fr.litarvan.krobot.motor.User;
+import fr.litarvan.krobot.motor.discord.DiscordConversation;
 import fr.litarvan.krobot.util.KrobotFunctions;
 import fr.litarvan.krobot.util.PermissionManager;
 import java.util.List;
@@ -41,6 +42,8 @@ public class CommandRole extends ShenronCommand
     @Override
     public void handle(MessageCommandCaller caller, List<String> args) throws Exception
     {
+        DiscordConversation conversation = (DiscordConversation) caller.getConversation();
+
         String message = Strings.join(args, " ");
         String name = message.trim();
 
@@ -76,6 +79,6 @@ public class CommandRole extends ShenronCommand
             role = "an admin of 'Support Launcher'";
         }
 
-        caller.getConversation().sendMessage(KrobotFunctions.mention(user) + " is " + role);
+        conversation.getChannel().sendMessage(KrobotFunctions.mention(user) + " is " + role).queue();
     }
 }

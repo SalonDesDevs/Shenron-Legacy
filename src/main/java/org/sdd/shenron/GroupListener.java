@@ -75,10 +75,8 @@ public class GroupListener extends DiscordExtension
             return;
         }
 
-        try
-        {
-            Message message = event.getChannel().getMessageById(event.getMessageId()).block();
-            Role role = getRole(message, event.getReaction(), event.getUser());
+        event.getChannel().getMessageById(event.getMessageId()).queue((message) -> {
+            Role role = getRole(message, event.getReaction());
             Guild guild = message.getGuild();
 
             if (role == null)
@@ -86,11 +84,8 @@ public class GroupListener extends DiscordExtension
                 return;
             }
 
-            guild.getController().addRolesToMember(guild.getMember(event.getUser()), role).block();
-        }
-        catch (RateLimitedException ignored)
-        {
-        }
+            guild.getController().addRolesToMember(guild.getMember(event.getUser()), role).queue();
+        });
     }
 
     @Override
@@ -103,10 +98,8 @@ public class GroupListener extends DiscordExtension
             return;
         }
 
-        try
-        {
-            Message message = event.getChannel().getMessageById(event.getMessageId()).block();
-            Role role = getRole(message, event.getReaction(), event.getUser());
+        event.getChannel().getMessageById(event.getMessageId()).queue((message) -> {
+            Role role = getRole(message, event.getReaction());
             Guild guild = message.getGuild();
 
             if (role == null)
@@ -114,14 +107,11 @@ public class GroupListener extends DiscordExtension
                 return;
             }
 
-            guild.getController().removeRolesFromMember(guild.getMember(event.getUser()), role).block();
-        }
-        catch (RateLimitedException ignored)
-        {
-        }
+            guild.getController().removeRolesFromMember(guild.getMember(event.getUser()), role).queue();
+        });
     }
 
-    private Role getRole(Message message, MessageReaction reaction, User user) throws RateLimitedException
+    private Role getRole(Message message, MessageReaction reaction)
     {
         GroupTrigger trigger = null;
         Pair<String, String> group = null;
@@ -151,7 +141,7 @@ public class GroupListener extends DiscordExtension
 
         if (group == null)
         {
-            message.deleteMessage().block();
+            message.deleteMessage().queue();
             return null;
         }
 
@@ -159,7 +149,7 @@ public class GroupListener extends DiscordExtension
 
         if (roles.size() == 0)
         {
-            message.deleteMessage().block();
+            message.deleteMessage().queue();
             return null;
         }
 

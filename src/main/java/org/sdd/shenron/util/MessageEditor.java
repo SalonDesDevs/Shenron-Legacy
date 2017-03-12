@@ -4,6 +4,7 @@ import fr.litarvan.krobot.motor.Conversation;
 import fr.litarvan.krobot.motor.Message;
 import fr.litarvan.krobot.motor.User;
 import fr.litarvan.krobot.motor.discord.DiscordConversation;
+import fr.litarvan.krobot.motor.discord.DiscordMessage;
 import fr.litarvan.krobot.motor.discord.DiscordUser;
 import fr.minuskube.bot.discord.util.Webhook;
 import java.util.HashMap;
@@ -30,7 +31,7 @@ public final class MessageEditor
 
             if (delete)
             {
-                message.delete();
+                ((DiscordMessage) message).getMessage().deleteMessage().queue();
             }
         }
         else
