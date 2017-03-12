@@ -153,14 +153,6 @@ public class GroupListener extends DiscordExtension
             return null;
         }
 
-        try
-        {
-            Thread.sleep(1000L);
-        }
-        catch (InterruptedException e)
-        {
-        }
-
         return roles.get(0);
     }
 
